@@ -1,5 +1,8 @@
-
-
+# ================================================================
+# Function params (Materials)
+# Materials (Materials struct) => structure materials variable
+# Return the kp parameters of a material from csv file.
+# ================================================================
 
 function params(Materials)
     arr=readdlm("./src/MaterialsBulk.csv",',');
@@ -10,6 +13,16 @@ function params(Materials)
     Materials.VBO=arr[i,9]; Materials.k=arr[i,10];
     nothing 
 end
+
+# ============================================================================
+# Function VashPar(material)
+# Materials (Materials struct) => structure materials variable
+# 
+# obtains the Varshni parameter of respective material indicated in Materials 
+# variable.
+#
+# return; two varables (float) with the values of the alpha and beta
+# ============================================================================
 function VashPar(material)
     arr1=readdlm("./src/TempPar.csv",',');
     index1=findall(x->x==material,arr1);
@@ -19,23 +32,46 @@ function VashPar(material)
     return alfa, beta
 end
 
+# ====================================================================================
+# function EgTemp(T,material,Eg)
+# T (float)=> Temperature,  material (Materials struct) =>structure materials variable
+# Eg (float) => energy gap
+#
+# Calculates the band gap energy for the temperature (T) using the Varshni formula
+#
+# Return EgT => Energy band gap 
+# ====================================================================================
+
 function EgTemp(T,material,Eg)
     mat1,mat2,comp,alloy=DetMat(material)
-    
-    if mat2==""
-        alfa, beta = VashPar(mat1)
+    if mat1=="HgTe"
+        EgT=-0.303
     else
-        alfa1, beta1 = VashPar(mat1)
-        alfa2, beta2 = VashPar(mat2)
+        if mat2==""
+            alfa, beta = VashPar(mat1)
+        else
+            alfa1, beta1 = VashPar(mat1)
+            alfa2, beta2 = VashPar(mat2)
         
-        alfa=comp*alfa1+(1.0-comp)*alfa2
-        beta=comp*beta1+(1.0-comp)*beta2
+            alfa=comp*alfa1+(1.0-comp)*alfa2
+            beta=comp*beta1+(1.0-comp)*beta2
+        end
+    
+        EgT=Eg-(alfa*T^2)/(T+beta);
     end
-    
-    EgT=Eg-(alfa*T^2)/(T+beta);
-    
     return EgT
 end
+
+# =======================================================================================
+# function detMat(mat)
+# mat (String) => Name of Alloy or binary compound
+#
+# Returns the the alloy's compositions and the respective concentration, if the alloy is 
+# a binary compound this function returns only the name and the conmosition is zero.
+#
+# return: mat1, mat2 (string)=> name of binary compounds forming the alloy, 
+# comp (float) => composition fraction, alloy (string) => name of the alloy
+# =======================================================================================
 
 function DetMat(mat)
     if length(mat)==4
@@ -46,6 +82,13 @@ function DetMat(mat)
     return mat1, mat2, comp, alloy
 end
 
+# =======================================================================================
+# function BowingPar (bowpar)
+# bowpar (struct BowPar) => conatins the name of alloy and the bowing parameters
+#
+# This function adds the values of bowing parameters to BowPar structure
+# =======================================================================================
+
 function BowingPar(bowpar)
     arr=readdlm("./src/BowingPar.csv",',');
     index1=findall(x->x==bowpar.alloy,arr);
@@ -54,6 +97,16 @@ function BowingPar(bowpar)
     bowpar.cVBO=arr[i,7]
     nothing
 end
+
+# =======================================================================================
+# function ParrAll(material1,material2,allMat,comp,All1)
+# material1, material2 (string)=> name of binary compounds forming the alloy, 
+# comp (float) => composition fraction, allMat (struct Materials) => struct with the data
+# about the alloy
+# All1(struct BowPar) => conatins the name of alloy and the bowing parameters
+#
+# this function calculates the parameters used in calculations for an alloy
+# =======================================================================================
 
 function ParrAll(material1,material2,allMat,comp,All1)
     allMat.g1=comp*material1.g1+(1.0-comp)*material2.g1; allMat.g2=comp*material1.g2+(1.0-comp)*material2.g2;
@@ -67,6 +120,14 @@ function ParrAll(material1,material2,allMat,comp,All1)
     allMat.k=comp*material1.k+(1.0-comp)*material2.k;
     nothing
 end
+
+# =======================================================================================
+# function ParMat(AllMat,T)
+# allMat (struct Materials) => struct with the data of the alloy
+# T (float) => Temparature
+# 
+# This function fills the struct materials used in K.P bulk calculation
+# =======================================================================================
 
 function ParMat(AllMat,T)
     mat1, mat2, comp, alloy = DetMat(AllMat.material)
@@ -82,6 +143,12 @@ function ParMat(AllMat,T)
     EgT=EgTemp(T,AllMat.material,AllMat.Eg)
     AllMat.Eg=EgT
 end
+
+# =======================================================================================
+# function supParams(layer,X,boundary,mlayer,T)
+# 
+# layer ()
+# =======================================================================================
 
 function supParams(layer,X,boundary,mlayer,T)
     nlay=1;

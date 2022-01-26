@@ -19,9 +19,12 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
        if soc  # verifies if the spin-orbit coupling is enabled
             if tipo=="Kane"
                 
-               h=HKaneSoc(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.delta,mm.F) # call the function HKaneSoc
+               h=HKaneSoc(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.delta,mm.F,mm.VBO) # call the function HKaneSoc
             elseif tipo=="Simple"
                h=HsimpleSoc(mm.Eg,kx,ky,kz,A,B,C,D,mm.delta,mm.F)
+            elseif tipo=="KaneII"
+                 h=HKaneII(kx,ky,kz,mm)
+                
             else
                 
             end
@@ -29,9 +32,12 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
         else
            if tipo=="Kane"
                 
-               h=HKane(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.F)
+               h=HKane(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.F,mm.VBO)
             elseif tipo=="Simple"
                 h=Hsimple(mm.Eg,kx,ky,kz,A,B,C,D)
+            elseif tipo=="KaneII"
+                print("Not implemented")
+                
             else
                 
             end
@@ -45,10 +51,11 @@ end
 
 # ====================================================================================================
 # function DOS(Ein,Eend,Estep,E,g)
+# Ein (float)=>  inital energy;    Eend (float)=> final energy;   Estep (float)=> step energy for calculation
 #
 # Calculates a Density Of States between Ein and Eend with an energy separation of Estep
 #
-# Ein =>  
+# Return => two arrays with the energy values and the Density of States values
 # ====================================================================================================
 function DOS(Ein,Eend,Estep,E,g)
     Edos=collect(range(Ein, step=Estep, stop=Eend));
