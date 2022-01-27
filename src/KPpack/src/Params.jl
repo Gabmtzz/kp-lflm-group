@@ -161,3 +161,13 @@ function supParams(layer,X,boundary,mlayer,T)
     end    
     return boundaryPoints[1:length(boundary)-1]
 end
+
+# =================================================================================================================
+# The data come from:
+# * Igor Vurgaftman, Matthew P. Lumb, and Jerry R. Meyer, Bands and Photons in III-V Semiconductor Quantum Structures,Oxford, 2020
+# 
+# *Michał Marchewka, et.al., Finite-difference method applied for eight-band kp model for Hg1−xCdxTe/HgTe quantum well, International Journal of 
+#  Modern Physics B, 2017
+#
+# * I. Vurgaftman and J. R. Meyer , Band parameters for III–V compound semiconductors and their alloys", Journal of Applied Physics 89, 5815-5875 # (2001)
+# =================================================================================================================

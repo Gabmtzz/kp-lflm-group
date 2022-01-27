@@ -64,3 +64,11 @@ function HKaneII(kx,ky,kz,m)
     
    return Htot 
 end
+
+# ===================================================================================================
+# The hamiltonians are taken from:
+# * Igor Vurgaftman, Matthew P. Lumb, and Jerry R. Meyer, Bands and Photons in III-V Semiconductor Quantum Structures,Oxford, 2020
+# 
+# *Michał Marchewka, et.al., Finite-difference method applied for eight-band kp model for Hg1−xCdxTe/HgTe quantum well, International Journal of 
+#  Modern Physics B, 2017
+# ===================================================================================================
