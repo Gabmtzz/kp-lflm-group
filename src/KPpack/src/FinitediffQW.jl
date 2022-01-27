@@ -16,6 +16,11 @@ function mesh(Npts,layer,n)
 
 end
 
+# =================================================================================================================
+# The next matrices are taken from:
+# *Michał Marchewka, et.al., Finite-difference method applied for eight-band kp model for Hg1−xCdxTe/HgTe quantum well, International Journal of 
+#  Modern Physics B, 2017
+# ===================================================================================================
 
 function A1(mlayer,n)
     mp=mlayer[n];
