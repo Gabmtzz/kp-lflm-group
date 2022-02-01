@@ -228,3 +228,37 @@ function Cb2(mlayer,n,kx,ky,dx)
     return B1b
 
 end
+
+# =================================================================================================================
+# Matrix Hamiltonian 
+# =================================================================================================================
+
+function QWHamiltonianMatrix(mlayer,kx,ky,dx,len,bP,X)
+    AmV=Array{Matrix{ComplexF64}}(undef, len); CmV=Array{Matrix{ComplexF64}}(undef, len-1); BmV=Array{Matrix{ComplexF64}}(undef, len-1)  
+    j=1
+    for i in 1:length(AmV)
+        if i==1
+            AmV[i]=KPpack.A(mlayer,i,kx,ky,dx)
+            BmV[i]=KPpack.B(mlayer,i,kx,ky,dx)
+        elseif i==length(AmV)
+            AmV[i]=KPpack.A(mlayer,i,kx,ky,dx)
+            CmV[i-1]=KPpack.C(mlayer,i,kx,ky,dx)
+        elseif X[i]==bP[j]
+            AmV[i]=KPpack.Ab1(mlayer,n,kx,ky,dx)
+            BmV[i]=KPpack.Bb1(mlayer,n,kx,ky,dx)
+            CmV[i]=KPpack.C(mlayer,i,kx,ky,dx)
+        elseif X[i]==bP[j]+1
+            AmV[i]=KPpack.Ab2(mlayer,n,kx,ky,dx)
+            BmV[i]=KPpack.B(mlayer,i,kx,ky,dx)
+            CmV[i]=KPpack.Cb2(mlayer,n,kx,ky,dx)
+            
+            j+=1
+        else
+            AmV[i]=KPpack.A(mlayer,i,kx,ky,dx)
+            BmV[i]=KPpack.B(mlayer,i,kx,ky,dx)
+            CmV[i-1]=KPpack.C(mlayer,i,kx,ky,dx)
+        end
+    end
+
+    return sparse(BlockTridiagonal(CmV, AmV, BmV))
+end
