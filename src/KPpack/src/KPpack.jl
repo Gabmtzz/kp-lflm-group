@@ -5,6 +5,9 @@ using LinearAlgebra
 using CSV
 using DataFrames
 using DelimitedFiles
+using SparseArrays, BlockBandedMatrices
+
+
 #export Materials, parMat, DOS, DiagM, Plotbands, PlotDOS,
 
 #materials parameters
