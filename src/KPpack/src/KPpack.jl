@@ -6,7 +6,7 @@ using CSV
 using DataFrames
 using DelimitedFiles
 using SparseArrays, BlockBandedMatrices
-
+using Arpack
 
 #export Materials, parMat, DOS, DiagM, Plotbands, PlotDOS,
 

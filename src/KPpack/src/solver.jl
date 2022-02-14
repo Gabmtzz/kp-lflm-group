@@ -71,3 +71,21 @@ function DOS(Ein,Eend,Estep,E,g)
     ArrDos=ArrDos/(de*sum(ArrDos))
     return Edos, ArrDos
 end 
+
+function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,boundPoints,n,c,cp,sV,sC )
+    En=zeros(Nt,n); Env=zeros(Nt,n); Kp=zeros(Nt);
+    for Nk in 1:Nt
+        k=[pl,pm]*kmax*(Nk-1)/(Nt+1);
+        kx=k[1]; ky=k[2]
+        Hamqw=QWHamiltonianMatrix(mlayer,kx,ky,dx,Npts,boundPoints,c,cp);
+        λ, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sC);
+        λ1, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sV);
+        E=sort(real(λ));
+        Ev=sort(real(λ1));
+        En[Nk,:]=E;
+        Env[Nk,:]=Ev;
+        Kp[Nk]=(Nk-1)/(Nt+1)*kmax;
+    end
+
+    return En,Env,Kp
+end
