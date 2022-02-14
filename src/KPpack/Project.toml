@@ -4,6 +4,7 @@ authors = ["Gabmtzz <gabmtzz27@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
 BlockBandedMatrices = "ffab5731-97b5-5995-9138-79e8c1846df0"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
