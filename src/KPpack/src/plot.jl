@@ -42,10 +42,10 @@ function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,yinf,ysup)
         plot!(Kqw10,Evq10,color=:blue, leg=false)
     elseif option=="comp_V"
         plot(Kqw11,Evq11,color=:blue, leg=false)
-        plot!(Kqw10,Evq10,color=:red, leg=false)
+        plot!(Kqw10,Evq10,color=:red,line=(:dot, 4), leg=false)
     elseif option=="comp_C"
         plot(Kqw11,Ecq11,color=:blue, leg=false)
-        plot!(Kqw10,Ecq10,color=:red, leg=false)
+        plot!(Kqw10,Ecq10,color=:red,line=(:dot, 4), leg=false)
     end
     plot!(ylabel="Energy (Ev)", xlabel="k (1/nm)", ylims=(yinf,ysup))
 end
