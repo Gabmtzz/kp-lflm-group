@@ -132,13 +132,18 @@ function B2(mlayer,n,kx,ky,dx)
     mp=mlayer[n]
     kplus=kx+im*ky; kminus=kx-im*ky;
     B2a=zeros(8,8)*im;
-    B2a[4,3]=-2*sqrt(3)*mp.g3*kminus; 
-    B2a[5,6]=2*sqrt(3)*mp.g3*kplus;
-    B2a[7,3]=-sqrt(2)*sqrt(3)*mp.g3*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*mp.g3*kplus;
-    B2a[8,4]=-sqrt(6)*sqrt(3)*mp.g3*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*mp.g3*kplus;
+    #B2a[4,3]=-2*sqrt(3)*mp.g3*kminus; 
+    #B2a[5,6]=2*sqrt(3)*mp.g3*kplus;
+    #B2a[7,3]=-sqrt(2)*sqrt(3)*mp.g3*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*mp.g3*kplus;
+    #B2a[8,4]=-sqrt(6)*sqrt(3)*mp.g3*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*mp.g3*kplus;
     
+    B2a[3,4]=2*sqrt(3)*mp.g3*kminus; B2a[3,7]=-sqrt(6)*mp.g3*kminus;
+    B2a[4,8]=sqrt(3)*sqrt(6)*mp.g3*kminus;
+    B2a[5,7]=sqrt(3)*sqrt(6)*mp.g3*kplus;
+    B2a[6,5]=-2*sqrt(3)*mp.g3*kplus; B2a[6,8]=-sqrt(6)*mp.g3*kplus;
+
     #B2=(im/(2*dx))*B2a'
-    B2=B2a'
+    B2=B2a
     return B2
 end
 
@@ -146,12 +151,18 @@ function B2wb(mlayer,n,kx,ky,dx)
     mp=mlayer[n]; mp1=mlayer[n+1];
     kplus=kx+im*ky; kminus=kx-im*ky;
     B2a=zeros(8,8)*im;
-    B2a[4,3]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; 
-    B2a[5,4]=2*kminus*(mp.k-mp1.k); B2a[5,6]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
-    B2a[7,3]=-sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
-    B2a[8,4]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus; B2a[8,7]=2*kminus*(mp.k-mp1.k);
+    #B2a[4,3]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; 
+    #B2a[5,4]=2*kminus*(mp.k-mp1.k); B2a[5,6]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
+    #B2a[7,3]=-sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
+    #B2a[8,4]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus; B2a[8,7]=2*kminus*(mp.k-mp1.k);
     
-    B2=B2a'
+    B2a[3,4]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[3,7]=-sqrt(6)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus;
+    B2a[4,5]=2*kminus*(mp.k-mp1.k); B2a[4,8]=sqrt(3)*sqrt(6)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus;
+    B2a[5,7]=sqrt(3)*sqrt(6)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
+    B2a[6,5]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;B2a[6,8]=-sqrt(6)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
+    B2a[7,8]=2*kminus*(mp.k-mp1.k);
+
+    B2=B2a
     return B2
 end
 
@@ -159,12 +170,18 @@ function C2wb(mlayer,n,kx,ky,dx)
     mp=mlayer[n]; mp1=mlayer[n-1];
     kplus=kx+im*ky; kminus=kx-im*ky;
     B2a=zeros(8,8)*im;
-    B2a[4,3]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; 
-    B2a[5,4]=2*kminus*(mp.k-mp1.k); B2a[5,6]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
-    B2a[7,3]=-sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
-    B2a[8,4]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus; B2a[8,7]=2*kminus*(mp.k-mp1.k);
+    #B2a[4,3]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; 
+    #B2a[5,4]=2*kminus*(mp.k-mp1.k); B2a[5,6]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
+    #B2a[7,3]=-sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[7,5]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
+    #B2a[8,4]=-sqrt(6)*sqrt(3)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus; B2a[8,6]=sqrt(2)*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus; B2a[8,7]=2*kminus*(mp.k-mp1.k);
     
-    B2=B2a'
+    B2a[3,4]=2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus; B2a[3,7]=-sqrt(6)*(mp.g3+mp1.g3+mp.k-mp1.k)*kminus;
+    B2a[4,5]=2*kminus*(mp.k-mp1.k); B2a[4,8]=sqrt(3)*sqrt(6)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kminus;
+    B2a[5,7]=sqrt(3)*sqrt(6)*(mp.g3+mp1.g3-(1/3)*(mp.k-mp1.k))*kplus;
+    B2a[6,5]=-2*sqrt(3)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus; B2a[6,8]=-sqrt(6)*(mp.g3+mp1.g3+mp.k-mp1.k)*kplus;
+    B2a[7,8]=2*kminus*(mp.k-mp1.k);
+
+    B2=B2a
     return B2
 end
 #===========================================#
@@ -209,7 +226,7 @@ function B(mlayer,n,kx,ky,dx,c,cp)
     #c=0.038;
     a3=A3(mlayer,n); b1=(1/c)*B1(mlayer,n,kx,ky,c,cp); b2=B2(mlayer,n,kx,ky,dx);
     
-    b=c*((-1/(dx*dx))*a3+(-im/(2*dx))*b1+(im/(2*dx))*b2);
+    b=c*((-1/(dx*dx))*a3+(-im/(2*dx))*b1+(-im/(2*dx))*b2);
     
     return b
 end
@@ -219,7 +236,7 @@ function Bb1(mlayer,n,kx,ky,dx,c,cp)
     a3b=A3(mlayer,n); a3w=A3(mlayer,n+1);
     b1wb=(1/c)*B1wb(mlayer,n,kx,ky,c,cp); b2wb=B2wb(mlayer,n,kx,ky,dx);
     
-    B1b=c*(-(a3b+a3w)*(1/(2*dx*dx))+b1wb*(im/(2*dx))+b2wb*(-im/(2*dx)));
+    B1b=c*(-(a3b+a3w)*(1/(2*dx*dx))+b1wb*(-im/(2*dx))+b2wb*(-im/(2*dx)));
     
     return B1b
 
@@ -229,7 +246,7 @@ function C(mlayer,n,kx,ky,dx,c,cp)
     #c=0.038;
     a3=A3(mlayer,n); b1=(1/c)*B1(mlayer,n,kx,ky,c,cp); b2=B2(mlayer,n,kx,ky,dx);
     
-    c=c*((-1/(dx*dx))*a3+(im/(2*dx))*b1+(-im/(2*dx))*b2);
+    c=c*((-1/(dx*dx))*a3+(im/(2*dx))*b1+(im/(2*dx))*b2);
     
     return c
 end
@@ -239,7 +256,7 @@ function Cb2(mlayer,n,kx,ky,dx,c,cp)
     a3b=A3(mlayer,n); a3w=A3(mlayer,n-1);
     c1wb=(1/c)*C1wb(mlayer,n,kx,ky,c,cp); c2wb=C2wb(mlayer,n,kx,ky,dx);
     
-    B1b=c*(-(a3b+a3w)*(1/(2*dx*dx))+c1wb*(-im/(2*dx))+c2wb*(im/(2*dx)));
+    B1b=c*(-(a3b+a3w)*(1/(2*dx*dx))+c1wb*(im/(2*dx))+c2wb*(im/(2*dx)));
     
     return B1b
 
