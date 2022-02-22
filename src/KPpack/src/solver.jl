@@ -89,3 +89,10 @@ function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,boundPoints,n,c,cp,sV,sC )
 
     return En,Env,Kp
 end
+
+function EigSolQW(mlayer,Npts,boundPoints,c,cps,dx)
+    kx,ky=0.0,0.0;
+    Hamqw=KPpack.QWHamiltonianMatrix(mlayer,kx,ky,dx,Npts,boundPoints,c,cps);
+    Eqw0, EVqw0 = eigen(Matrix(Hamqw));
+    return Eqw0, EVqw0
+end
