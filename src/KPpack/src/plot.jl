@@ -1,14 +1,16 @@
-ENV["GKS_ENCODING"]="utf-8" 
-using Plots
-
 function PlotBands(Ex,El,Kx,Kl)
-    plot(Kx,Ex,color=:blue, leg=false)
-    plot!(-1*Kl,El,color=:blue, leg=false)
-    plot!(ylabel="Energy (EV)", xticks=([-1.0,-0.5,0,0.5,1.0],["<- L","Λ","Γ","Δ","X ->"]))
+    plt.figure()
+    plt.xticks(ticks=[-1.0,-0.5,0,0.5,1.0], labels=[L"$\leftarrow$ L","Λ"," Γ", "Δ",L"X $\rightarrow$"])
+    plt.ylabel("Energy [eV]")
+    plt.plot(Kx,Ex, color="black")
+    plt.plot(-1*Kl,El, color="black")
 end
+
 function PlotDOS(EDOS,aDOS)
-    plot(EDOS,aDOS,color=:blue, leg=false)
-    plot!(xlabel="Energy (Ev)", yticks=([],[]),ylabel="DOS")
+    plt.figure()
+    plt.yticks([])
+    plt.xlabel("Energy [eV]"); plt.ylabel("DOS")
+    plt.plot(EDOS,aDOS, color="black")
 end
 
 function plotProf(mlayer,X,option)
@@ -17,35 +19,53 @@ function plotProf(mlayer,X,option)
         Ec[i]=mlayer[i].Eg
         Ev[i]=mlayer[i].VBO
     end
+    
+    plt.xlabel("X [nm]"); plt.ylabel("Energy [Ev]")
     if option=="both"
-        plot(X,Ec, color=:blue, label="Ec")
-        plot!(X,Ev, color=:red, label="Ev")
+        plt.plot(X,Ec, color="blue", label="Ec")
+        plt.plot(X,Ev, color="red", label="Ev")
+        plt.legend()
     elseif option=="Ec"
-        plot(X,Ec, color=:blue, leg=false)
+        plt.plot(X,Ec, color="black")
     elseif option=="Ev"
-        plot(X,Ev, color=:blue, leg=false)
+        plt.plot(X,Ev, color="black")
+    else 
+        print("bad option: use both, Ec or Ev")
     end
-    plot!(xlabel="X (nm)", ylabel="Energy (Ev)")
 end
 
-function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,yinf,ysup)
+function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,poslab)
+    plt.xlabel(L"$k_{||}~ [nm^{-1}]$"); plt.ylabel("Energy [Ev]")
     if option=="complete_Band"
-        plot(-1*Kqw11,Ecq11,color=:blue, leg=false)
-        plot!(-1*Kqw11,Evq11,color=:blue, leg=false)
-        plot!(Kqw10,Evq10,color=:blue, leg=false)
-        plot!(Kqw10,Ecq10,color=:blue, leg=false)
+        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.plot(-1*Kqw11,Ecq11,color="black" )
+        plt.plot(-1*Kqw11,Evq11,color="black" )
+        plt.plot(Kqw10,Evq10,color="black" )
+        plt.plot(Kqw10,Ecq10,color="black" )
     elseif option=="complete_C"
-        plot(-1*Kqw11,Ecq11,color=:blue, leg=false)
-        plot!(Kqw10,Ecq10,color=:blue, leg=false)
+        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.plot(-1*Kqw11,Ecq11,color="black" )
+        plt.plot(Kqw10,Ecq10,color="black" )
     elseif option=="complete_V"
-        plot(-1*Kqw11,Evq11,color=:blue, leg=false)
-        plot!(Kqw10,Evq10,color=:blue, leg=false)
+        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.plot(-1*Kqw11,Evq11,color="black" )
+        plt.plot(Kqw10,Evq10,color="black" )
     elseif option=="comp_V"
-        plot(Kqw11,Evq11,color=:blue, leg=false)
-        plot!(Kqw10,Evq10,color=:red,line=(:dot, 4), leg=false)
+        plt.plot(Kqw11,Evq11,color="black", label=L"$[110]$")
+        plt.plot(Kqw10,Evq10,color="red",linestyle="dotted", label=L"$[100]$")
+        #plt.legend()
     elseif option=="comp_C"
-        plot(Kqw11,Ecq11,color=:blue, leg=false)
-        plot!(Kqw10,Ecq10,color=:red,line=(:dot, 4), leg=false)
+        plt.plot(Kqw11,Ecq11,color="black" , label=L"$[110]$")
+        plt.plot(Kqw10,Ecq10,color="red",linestyle="dotted", label=L"$[100]$" )
+        #plt.legend()
+    else 
+        print("bad option: use complete_Band, complete_C, complete_V, comp_V or comp_C")
     end
-    plot!(ylabel="Energy (Ev)", xlabel="k (1/nm)", ylims=(yinf,ysup))
+end
+
+function PloteigvQW(Npts,Eqw0)
+    x1=collect(range(1,8*Npts, length=8*Npts));
+    Egqw=real(Eqw0);
+    plt.xlabel("Eigenvalue number, α"); plt.ylabel("Energy [eV]")
+    plt.plot(x1,Egqw, color="blue", "o")
 end
