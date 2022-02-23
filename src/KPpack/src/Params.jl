@@ -171,3 +171,11 @@ end
 #
 # * I. Vurgaftman and J. R. Meyer , Band parameters for III–V compound semiconductors and their alloys", Journal of Applied Physics 89, 5815-5875 # (2001)
 # =================================================================================================================
+
+function writefile(data,name)
+    path="../../data/$(name).dat"
+    fout=open(path,"w")
+    datstr=(a->(@sprintf "%10.3f" a)).(data);
+    writedlm(fout, datstr, "" , quotes=false)
+    close(fout)
+end

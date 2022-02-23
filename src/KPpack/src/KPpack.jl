@@ -8,6 +8,7 @@ using DelimitedFiles
 using SparseArrays, BlockBandedMatrices
 using Arpack
 using PyCall, PyPlot, LaTeXStrings
+using Printf
 #export Materials, parMat, DOS, DiagM, Plotbands, PlotDOS,
 
 #materials parameters
