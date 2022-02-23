@@ -65,7 +65,7 @@ function HKaneII(kx,ky,kz,m)
    return Htot 
 end
 
-# ===================================================================================================
+# ========================================================================================
 # The hamiltonians are taken from:
 # * Igor Vurgaftman, Matthew P. Lumb, and Jerry R. Meyer, Bands and Photons in III-V Semiconductor Quantum Structures,Oxford, 2020
 # 

@@ -1,4 +1,4 @@
-# ==========================================================================================================================
+# ================================================================================
 # function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)  
 # m (structure Materials) => structure materials variable; kmax (float) => maximum value of k coordinate
 # pl, pm, pn (integer) => numbers similar to Miller index [l,m,n]; soc (boolean) => enables spin-orbit calculation
@@ -6,7 +6,7 @@
 #
 # This function calculate the eigen values of the kp hamiltonian
 # Return=> two arrays, one with the energies and other with the k values ===> dim 
-# ==========================================================================================================================
+# ================================================================================
 function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
     n=1;
     L=mm.g1+4*mm.g2-(mm.Ep/mm.Eg); M=mm.g1-2*mm.g2; N=6*mm.g3-(mm.Ep/mm.Eg);
@@ -40,6 +40,7 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
                 
             else
                 
+                
             end
         end
         w=eigvals(h); E=real(sort(w));
@@ -49,14 +50,14 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
     return En,Kp
 end
 
-# ====================================================================================================
+# =================================================================================
 # function DOS(Ein,Eend,Estep,E,g)
 # Ein (float)=>  inital energy;    Eend (float)=> final energy;   Estep (float)=> step energy for calculation
 #
 # Calculates a Density Of States between Ein and Eend with an energy separation of Estep
 #
 # Return => two arrays with the energy values and the Density of States values
-# ====================================================================================================
+# ================================================================================
 function DOS(Ein,Eend,Estep,E,g)
     Edos=collect(range(Ein, step=Estep, stop=Eend));
     de=Edos[2]-Edos[1];
