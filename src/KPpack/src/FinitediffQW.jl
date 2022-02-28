@@ -226,7 +226,7 @@ function B(mlayer,n,kx,ky,dx,c,cp)
     #c=0.038;
     a3=A3(mlayer,n); b1=(1/c)*B1(mlayer,n,kx,ky,c,cp); b2=B2(mlayer,n,kx,ky,dx);
     
-    b=c*((-1/(dx*dx))*a3+(-im/(2*dx))*b1+(-im/(2*dx))*b2);
+    b=c*((-1/(dx*dx))*a3+(-im/(2*dx))*b1+(-im/(2*dx))*b2 -((-im/(2*dx))'*b1'+(-im/(2*dx))'*b2'));
     
     return b
 end
@@ -246,9 +246,9 @@ function C(mlayer,n,kx,ky,dx,c,cp)
     #c=0.038;
     a3=A3(mlayer,n); b1=(1/c)*B1(mlayer,n,kx,ky,c,cp); b2=B2(mlayer,n,kx,ky,dx);
     
-    c=c*((-1/(dx*dx))*a3+(im/(2*dx))*b1+(im/(2*dx))*b2);
+    C=c*((-1/(dx*dx))*a3+(im/(2*dx))*b1+(im/(2*dx))*b2-((im/(2*dx))'*b1'+(im/(2*dx))'*b2'));
     
-    return c
+    return C
 end
 
 function Cb2(mlayer,n,kx,ky,dx,c,cp)
