@@ -34,20 +34,20 @@ function plotProf(mlayer,X,option)
     end
 end
 
-function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,poslab)
+function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,poslab, kmax)
     plt.xlabel(L"$k_{||}~ [nm^{-1}]$"); plt.ylabel("Energy [Ev]")
     if option=="complete_Band"
-        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
         plt.plot(-1*Kqw11,Ecq11,color="black" )
         plt.plot(-1*Kqw11,Evq11,color="black" )
         plt.plot(Kqw10,Evq10,color="black" )
         plt.plot(Kqw10,Ecq10,color="black" )
     elseif option=="complete_C"
-        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
         plt.plot(-1*Kqw11,Ecq11,color="black" )
         plt.plot(Kqw10,Ecq10,color="black" )
     elseif option=="complete_V"
-        plt.text(-0.07,poslab, L"$\leftarrow~~[110]$"); plt.text(0.07,poslab, L"$[100]~~\rightarrow$")
+        plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
         plt.plot(-1*Kqw11,Evq11,color="black" )
         plt.plot(Kqw10,Evq10,color="black" )
     elseif option=="comp_V"
