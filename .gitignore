@@ -1,2 +1,4 @@
 .ipynb_checkpoints
 *.dat
+/data/*.csv
+Symbolic.ipynb

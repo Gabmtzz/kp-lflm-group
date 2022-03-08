@@ -50,6 +50,21 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
     return En,Kp
 end
 
+function calcBandBulk(mm,kmax,Nt,soc,tipo)
+    #X
+    pl=1; pm=0; pn=0
+    Ex, Kx =KPpack.DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo);
+    #L
+    pl=1; pm=1; pn=1; kmax= 0.2; Nt=100;
+    El, Kl =KPpack.DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo);
+    Exr=vcat(transpose(Kx),transpose(Ex))'
+    el=vcat(transpose(-1*Kl),transpose(El))'
+    Elr=rotl90(el,3)';
+    dat=vcat(Elr,Exr);
+    Ktot=dat[:,1]; Etot=dat[:,2:end];
+    return Ktot,Etot
+end
+
 # =================================================================================
 # function DOS(Ein,Eend,Estep,E,g)
 # Ein (float)=>  inital energy;    Eend (float)=> final energy;   Estep (float)=> step energy for calculation

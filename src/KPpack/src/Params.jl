@@ -173,9 +173,9 @@ end
 # =================================================================================================================
 
 function writefile(data,name)
-    path="../../data/$(name).dat"
+    path="../../data/$(name).csv"
     fout=open(path,"w")
-    datstr=(a->(@sprintf "%10.3f" a)).(data);
-    writedlm(fout, datstr, "" , quotes=false)
+    #datstr=(a->(@sprintf "%10.3f" a)).(data);
+    writedlm(fout, data, ",", header=false)
     close(fout)
 end
