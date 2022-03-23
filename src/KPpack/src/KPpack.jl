@@ -9,6 +9,8 @@ using SparseArrays, BlockBandedMatrices
 using Arpack
 using PyCall, PyPlot, LaTeXStrings
 using Printf
+using Symbolics
+
 #export Materials, parMat, DOS, DiagM, Plotbands, PlotDOS,
 
 #materials parameters
@@ -53,5 +55,6 @@ include("Params.jl")
 include("plot.jl")
 #finite diffrerences kp 8 band hamiltonian matrix
 include("FinitediffQW.jl")
-
+#simbolic calculations
+include("symb.jl")
 end # module
