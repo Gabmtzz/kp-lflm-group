@@ -132,3 +132,61 @@ function createBmatrizFD(H0,H1,H2,PrH,exclude,b1,b2)
     Cr=((H2l+H2r)/(2Δz^2))+((H1l-H1r')/(2Δz)); Cl=(2*H2l/(2*Δz^2))+((H1l-H1l')/(2*Δz))
     return Al,Ar,Bl,Br,Cr,Cl
 end
+
+function StrtoSymBase(expr)
+    
+    if typeof(expr)==Symbol
+        ss=expr; arrv=@variables $ss; arrv=arrv[1]
+        ex= Expr(:(=),expr,arrv); eval(ex)
+    elseif typeof(expr)==Expr
+        elems=expr.args
+        for i in 1:length(elems)
+            el=elems[i]
+            if el != :+ && el != :/&&el != :*&&el != :^ && el != :-
+
+                if typeof(el)==Symbol
+                    ss=elems[i]; arrv=@variables $ss; arrv=arrv[1]
+                    ex= Expr(:(=),elems[i],arrv); eval(ex)
+                elseif typeof(el)==Expr
+                    StrtoSymBase(el)
+                end
+            end
+        end
+    end
+end
+
+function StrtoSymbConv(s)
+    sM=Meta.parse(s)
+
+    StrtoSymBase(sM)
+    strconv=eval(sM)
+    
+    return strconv
+end
+
+function findch(ch,str)
+    index=0;
+    for i in 1:length(str)
+        ch=str[i]
+        if ch=='i'
+            index=i
+        end
+    end
+    return index
+end
+
+function StrtoSymbComplexConv(sc)
+    strRe=""; strIm=""
+
+    iel=findch('i',sc)
+
+    if iel != 0
+        strRe=sc[1:iel-2]; strIm=sc[iel+2:end];
+        exprRe=StrtoSymbConv(strRe); exprIm=StrtoSymbConv(strIm);
+        expr=exprRe+im*exprIm
+    else
+        strRe=sc;
+        expr=StrtoSymbConv(strRe);
+    end
+    return expr
+end
