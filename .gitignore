@@ -3,3 +3,4 @@
 /data/*.csv
 */SymbKP
 Symbolic.ipynb
+Hamiltonian.jl

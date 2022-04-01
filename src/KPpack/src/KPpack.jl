@@ -45,16 +45,17 @@ struct mat
     size     # size of the layer
 end
 # ===========================================================================================
+#simbolic calculations
+include("symb.jl")
 #diagonalizes the Hamiltonian matrix and find the DOS
 include("solver.jl")
 #Creates the matrix of Kane with/without spin-orbit coupling
-include("Hamiltonian.jl")
+#include("Hamiltonian.jl")
 #adquires the material parameters
 include("Params.jl")
 #Shows the band structure and the DOS
 include("plot.jl")
 #finite diffrerences kp 8 band hamiltonian matrix
 include("FinitediffQW.jl")
-#simbolic calculations
-include("symb.jl")
+
 end # module
