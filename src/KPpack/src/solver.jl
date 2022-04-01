@@ -1,3 +1,20 @@
+function calcBandBulk(mm,kmax,Nt,model,Emomentum,constC,constCP)
+    n=size(model)[1]
+
+    #X
+    pl=1; pm=0; pn=0
+    Ex, Kx =KPpack.DiagM(mm,kmax+0.4,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP);
+    #L
+    pl=1; pm=1; pn=1; Nt=100;
+    El, Kl =KPpack.DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP);
+    Exr=vcat(transpose(Kx),transpose(Ex))'
+    el=vcat(transpose(-1*Kl),transpose(El))'
+    Elr=rotl90(el,3)';
+    dat=vcat(Elr,Exr);
+    Ktot=dat[:,1]; Etot=dat[:,2:end];
+    return Ktot,Etot
+end
+
 # ================================================================================
 # function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)  
 # m (structure Materials) => structure materials variable; kmax (float) => maximum value of k coordinate
@@ -7,62 +24,32 @@
 # This function calculate the eigen values of the kp hamiltonian
 # Return=> two arrays, one with the energies and other with the k values ===> dim 
 # ================================================================================
-function DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo)
-    n=1;
-    L=mm.g1+4*mm.g2-(mm.Ep/mm.Eg); M=mm.g1-2*mm.g2; N=6*mm.g3-(mm.Ep/mm.Eg);
-    A=L+(mm.Ep/mm.Eg); B=M; C=N+(mm.Ep/mm.Eg); D=(1+2*mm.F+(mm.Ep/mm.Eg));   #calculate the k.p parameters
-    if soc n=2 end
-    En=zeros(Nt,4*n); Kp=zeros(Nt);
+function DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP)
+
+    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp"]
+    
+    paramsFunSymb=functionParams(paramsFunc,Emomentum)
+    
+    FuncMatreal=build_function(real(model),paramsFunSymb, expression=Val{false}); FuncMatim=build_function(imag(model),paramsFunSymb, expression=Val{false});
+    HBulkRe=FuncMatreal[2]; HBulkIm=FuncMatim[2];
+
+    En=zeros(Nt,n); Kp=zeros(Nt);
     for Nk in 1:Nt
        k=[pl,pm,pn]*kmax*(Nk-1)/(Nt+1); # create the k vector 
        kx=k[1]; ky=k[2];  kz=k[3]; #components of vector k
-       if soc  # verifies if the spin-orbit coupling is enabled
-            if tipo=="Kane"
-                
-               h=HKaneSoc(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.delta,mm.F,mm.VBO) # call the function HKaneSoc
-            elseif tipo=="Simple"
-               h=HsimpleSoc(mm.Eg,kx,ky,kz,A,B,C,D,mm.delta,mm.F)
-            elseif tipo=="KaneII"
-                 h=HKaneII(kx,ky,kz,mm)
-                
-            else
-                
-            end
-                
-        else
-           if tipo=="Kane"
-                
-               h=HKane(kx,ky,kz,mm.Eg,sqrt(mm.Ep),L,N,M,mm.F,mm.VBO)
-            elseif tipo=="Simple"
-                h=Hsimple(mm.Eg,kx,ky,kz,A,B,C,D)
-            elseif tipo=="KaneII"
-                print("Not implemented")
-                
-            else
-                
-                
-            end
-        end
-        w=eigvals(h); E=real(sort(w));
-        En[Nk,:]=E;
-        Kp[Nk]=(Nk-1)/(Nt+1);
+
+       HbRe=zeros(n,n); HbIm=zeros(n,n) 
+       HBulkRe(HbRe,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,sqrt(mm.Ep),mm.F,mm.k,mm.delta,mm.VBO,constC,constCP])
+       HBulkIm(HbIm,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,sqrt(mm.Ep),mm.F,mm.k,mm.delta,mm.VBO,constC,constCP])
+
+       h=HbRe+im*HbIm
+
+
+       w=eigvals(h); E=real(sort(w));
+       En[Nk,:]=E;
+       Kp[Nk]=(Nk-1)/(Nt+1);
     end
     return En,Kp
-end
-
-function calcBandBulk(mm,kmax,Nt,soc,tipo)
-    #X
-    pl=1; pm=0; pn=0
-    Ex, Kx =KPpack.DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo);
-    #L
-    pl=1; pm=1; pn=1; kmax= 0.2; Nt=100;
-    El, Kl =KPpack.DiagM(mm,kmax,Nt,pl,pm,pn,soc,tipo);
-    Exr=vcat(transpose(Kx),transpose(Ex))'
-    el=vcat(transpose(-1*Kl),transpose(El))'
-    Elr=rotl90(el,3)';
-    dat=vcat(Elr,Exr);
-    Ktot=dat[:,1]; Etot=dat[:,2:end];
-    return Ktot,Etot
 end
 
 # =================================================================================

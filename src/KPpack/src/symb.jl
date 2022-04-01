@@ -190,3 +190,69 @@ function StrtoSymbComplexConv(sc)
     end
     return expr
 end
+
+function createSymbMatrix(model)
+    Hs=Symbol("Hs"); Hs= @variables $Hs[1:size(model)[1],1:size(model)[2]]; Hs=Hs[1]
+    Hs=Symbolics.scalarize(Hs)
+
+    HsIm=Symbol("HsIm"); HsIm= @variables $HsIm[1:size(model)[1],1:size(model)[2]]; HsIm=HsIm[1]
+    HsIm=Symbolics.scalarize(HsIm)
+
+    for i in 1:size(model)[1]
+        for j in 1:size(model)[2]
+            epxrS=model[i,j]; exSimb=KPpack.StrtoSymbComplexConv(epxrS)
+            Hs[i,j]=substitute(Hs[i,j],Dict(Hs[i,j]=>real(exSimb))); HsIm[i,j]=substitute(HsIm[i,j],Dict(HsIm[i,j]=>imag(exSimb))) 
+        end
+    end
+    Ht=Hs+im*HsIm
+    return Ht;
+end
+
+function setMomentum(strK)
+    k1=Symbol(strK[1]); k2=Symbol(strK[2]); k3=Symbol(strK[3]);
+
+    momentumK = @variables $k1 $k2 $k3
+    
+    return momentumK
+end
+
+function functionParams(paramsFunc,momentum)
+    parmsfunSym=Symbol("PsF"); parmsfunSym= @variables $parmsfunSym[1:length(paramsFunc)]; parmsfunSym=parmsfunSym[1] 
+
+    parmsfunSym=Symbolics.scalarize(parmsfunSym)
+    for i in 1:length(paramsFunc)
+        simbF=Symbol(paramsFunc[i]); simbF = @variables $simbF; simbF=simbF[1]
+        parmsfunSym[i]=substitute(parmsfunSym[i],Dict(parmsfunSym[i]=> simbF))
+    end
+
+    funcParams=union(momentum,parmsfunSym)
+    return funcParams
+end
+
+function generateFunctionMatrix(matrix,paramsFunc,Emomentum)
+    #path="./src/HamiltonianFunc/"
+    
+    paramsFunSymb=KPpack.functionParams(paramsFunc,Emomentum)
+
+    FuncMatreal=build_function(real(matrix),paramsFunSymb); FuncMatim=build_function(imag(matrix),paramsFunSymb);
+    
+    #nameReal=path*name*"Real.jl"; nameImag=path*name*"Imag.jl" 
+    
+    #write(nameReal, string(FuncMatreal[2])); write(nameImag, string(FuncMatim[2]));
+    return FuncMatreal[2], FuncMatim[2]
+end
+
+function getSfunct(name)
+    path="./src/HamiltonianFunc/"
+    nameReal=path*name*"Real.jl"; nameImag=path*name*"Imag.jl"
+    
+    fRe=open(nameReal,"r")
+    sRe=read(fRe,String);
+    close(fRe)
+    
+    fIm=open(nameImag,"r")
+    sIm=read(fIm,String);
+    close(fIm)
+    
+    return sRe, sIm
+end
