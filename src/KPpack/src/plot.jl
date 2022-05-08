@@ -15,7 +15,7 @@ end
 function plotProf(mlayer,X,option)
     Ec=zeros(length(mlayer)); Ev=zeros(length(mlayer)) 
     for i in 1:length(mlayer)
-        Ec[i]=mlayer[i].Eg
+        Ec[i]=mlayer[i].Eg+mlayer[i].VBO
         Ev[i]=mlayer[i].VBO
     end
     

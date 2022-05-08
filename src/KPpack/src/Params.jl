@@ -156,7 +156,7 @@ function supParams(layer,X,boundary,mlayer,T)
     for i in 1:length(X)
         mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mlayer[i],T)
-        mlayer[i].Eg=mlayer[i].Eg+mlayer[i].VBO   
+        mlayer[i].Eg=mlayer[i].Eg#+mlayer[i].VBO   
         if X[i]>= boundary[nlay] boundaryPoints[nlay]=i; nlay+=1  end
     end    
     return boundaryPoints[1:length(boundary)-1]

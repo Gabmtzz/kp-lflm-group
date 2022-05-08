@@ -67,7 +67,7 @@ function extractmatrix(matriz,var)
         end
     end
 
-    k0=matriz-k1-k2
+    k0=simplify.(matriz-k1-k2)
     k1=substitute(k1,Dict(var => 1)); k2=substitute(k2,Dict(var => 1)); k0=substitute(k0,Dict(var => 1))
     
     return k0,k1,k2
@@ -76,7 +76,7 @@ end
 function createKm(H,var)
     matrizr=real(H); matrizi=imag(H);
     k0r,k1r,k2r=extractmatrix(matrizr,var); k0i,k1i,k2i=extractmatrix(matrizi,var);
-    k0=simplify.(k0r)+im*simplify.(k0i); k1=im*simplify.(k1r)+im*im*simplify.(k1i); k2=simplify.(k2r)+im*simplify.(k2i); 
+    k0=simplify.(k0r)+im*simplify.(k0i); k1=-im*simplify.(k1r)-simplify.(k1i); k2=-simplify.(k2r)-im*simplify.(k2i); 
     
     return k0,k1,k2
 end
@@ -255,4 +255,17 @@ function getSfunct(name)
     close(fIm)
     
     return sRe, sIm
+end
+
+function setExcludePar(exclude)
+    lEx=length(exclude)
+
+    excludeS=Symbol("exS");excludeS= @variables $excludeS[1:lEx]; excludeS=excludeS[1]
+    excludeS=Symbolics.scalarize(excludeS)
+
+    for i in 1:lEx
+        subs=Symbol(exclude[i]); subs= @variables $subs; subs=subs[1] 
+        excludeS[i]=substitute(excludeS[i],Dict(excludeS[i]=>subs))
+    end
+    return excludeS
 end
