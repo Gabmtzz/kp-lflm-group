@@ -56,6 +56,6 @@ include("Params.jl")
 #Shows the band structure and the DOS
 include("plot.jl")
 #finite diffrerences kp 8 band hamiltonian matrix
-include("FinitediffQW.jl")
+include("FDmat.jl")
 
 end # module
