@@ -103,7 +103,7 @@ end
 function eigenValQW(elem)
     inf,sup=0,0;
     for i in 1:length(elem)-1
-        if abs(elem[i]-elem[i+1])>=0.3
+        if (elem[i]<=0.0 && elem[i+1]>0.0)
             inf=elem[i]; sup=elem[i+1]
         end
     end
