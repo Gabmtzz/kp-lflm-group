@@ -17,7 +17,7 @@ function mesh(Npts,layer,n)
 end
 
 function createFuncFD(matriz,Emomentum)
-    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp"]; paramsFunSymb=functionParams(paramsFunc,Emomentum);
+    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P"]; paramsFunSymb=functionParams(paramsFunc,Emomentum);
     funcMre=build_function(real(matriz),paramsFunSymb, expression=Val{false}); funcMim=build_function(imag(matriz),paramsFunSymb, expression=Val{false})
     mRe=funcMre[2]; mIm=funcMim[2];
     
@@ -27,8 +27,8 @@ end
 function evalFuncFD(mRe,mIm,mlayer,i,kx,ky,consth,const2)
     mq=mlayer[i]
     mReal=zeros(8,8); mImag=zeros(8,8)
-    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,sqrt(mq.Ep),mq.F,mq.k,mq.delta,mq.VBO,consth,const2]); 
-    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,sqrt(mq.Ep),mq.F,mq.k,mq.delta,mq.VBO,consth,const2])
+    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(mq.Ep)]); 
+    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(mq.Ep)])
     mEval=mReal+im*mImag;
     
     return mEval
@@ -94,7 +94,7 @@ function createFDCmatrix(mlayer,i,H1Re,H1Im,H2Re,H2Im,kx,ky,dx,consth,const2)
     return Cm
 end
 
-function FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum)
+function FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum,pb)
     H0Re,H0Im=createFuncFD(H0,Emomentum); H1Re,H1Im=createFuncFD(H1,Emomentum); H2Re,H2Im=createFuncFD(H2,Emomentum);
     
     AmV=Array{Matrix{ComplexF64}}(undef, len); CmV=Array{Matrix{ComplexF64}}(undef, len-1); BmV=Array{Matrix{ComplexF64}}(undef, len-1)  
@@ -113,9 +113,11 @@ function FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum)
         end
     end
     hns=Matrix(BlockTridiagonal(CmV, AmV, BmV))
-    lhm=size(hns)[1]
-    hns[1:8,lhm-7:lhm]=createFDCmatrix(mlayer,1,H1Re,H1Im,H2Re,H2Im,kx,ky,dx,consth,const2)
-    hns[lhm-7:lhm,1:8]=createFDBmatrix(mlayer,len,H1Re,H1Im,H2Re,H2Im,kx,ky,dx,consth,const2)
+    if pb
+        lhm=size(hns)[1]
+        hns[1:8,lhm-7:lhm]=createFDCmatrix(mlayer,1,H1Re,H1Im,H2Re,H2Im,kx,ky,dx,consth,const2)
+        hns[lhm-7:lhm,1:8]=createFDBmatrix(mlayer,len,H1Re,H1Im,H2Re,H2Im,kx,ky,dx,consth,const2)
+    end
     
     #hsp=sparse(hns)
     

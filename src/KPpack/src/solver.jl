@@ -26,7 +26,7 @@ end
 # ================================================================================
 function DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP)
 
-    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp"]
+    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P"]
     
     paramsFunSymb=functionParams(paramsFunc,Emomentum)
     
@@ -39,8 +39,8 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP)
        kx=k[1]; ky=k[2];  kz=k[3]; #components of vector k
 
        HbRe=zeros(n,n); HbIm=zeros(n,n) 
-       HBulkRe(HbRe,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,sqrt(mm.Ep),mm.F,mm.k,mm.delta,mm.VBO,constC,constCP])
-       HBulkIm(HbIm,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,sqrt(mm.Ep),mm.F,mm.k,mm.delta,mm.VBO,constC,constCP])
+       HBulkRe(HbRe,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep)])
+       HBulkIm(HbIm,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep)])
 
        h=HbRe+im*HbIm
 
@@ -75,12 +75,12 @@ function DOS(Ein,Eend,Estep,E,g)
     return Edos, ArrDos
 end 
 
-function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,n,c,cp,sV,sC,Emomentum)
+function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,n,c,cp,sV,sC,Emomentum,pb)
     En=zeros(Nt,n); Env=zeros(Nt,n); Kp=zeros(Nt);
     for Nk in 1:Nt
         k=[pl,pm]*kmax*(Nk-1)/(Nt+1);
         kx=k[1]; ky=k[2]
-        Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum);
+        Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum,pb);
         λ, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sC);
         λ1, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sV);
         E=sort(real(λ));
@@ -93,19 +93,21 @@ function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,n,c,cp,sV,sC,Emomentum)
     return En,Env,Kp
 end
 
-function EigSolQW(mlayer,Npts,H0,H1,H2,c,cps,dx,Emomentum)
+function EigSolQW(mlayer,Npts,H0,H1,H2,c,cps,dx,Emomentum,pb)
     kx,ky=0.0,0.0;
-    Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cps,Npts,Emomentum);
+    Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cps,Npts,Emomentum,pb);
     Eqw0, EVqw0 = eigen(Matrix(Hamqw));
     return Eqw0, EVqw0
 end
 
 function eigenValQW(elem)
     inf,sup=0,0;
+    pos=0
     for i in 1:length(elem)-1
         if (elem[i]<=0.0 && elem[i+1]>0.0)
             inf=elem[i]; sup=elem[i+1]
+            pos=i
         end
     end
-    return inf, sup
+    return inf, sup, pos
 end
