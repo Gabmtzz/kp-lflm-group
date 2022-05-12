@@ -76,7 +76,7 @@ end
 function createKm(H,var)
     matrizr=real(H); matrizi=imag(H);
     k0r,k1r,k2r=extractmatrix(matrizr,var); k0i,k1i,k2i=extractmatrix(matrizi,var);
-    k0=simplify.(k0r)+im*simplify.(k0i); k1=-im*simplify.(k1r)-simplify.(k1i); k2=-simplify.(k2r)-im*simplify.(k2i); 
+    k0=simplify.(k0r)+im*simplify.(k0i); k1=-im*simplify.(k1r)+simplify.(k1i); k2=-simplify.(k2r)-im*simplify.(k2i); 
     
     return k0,k1,k2
 end
