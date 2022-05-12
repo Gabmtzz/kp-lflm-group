@@ -17,5 +17,6 @@ This Package is developed by members of [Dr. L.F. Lastras Martinez's](http://www
     * PyCall
     * PyPlot
     * SparseArrays
+    * Symbolics
 ## NOTE:  
 This repository is under construction.
