@@ -162,6 +162,20 @@ function supParams(layer,X,boundary,mlayer,T)
     return boundaryPoints[1:length(boundary)-1]
 end
 
+function setStructure(structure,fB)
+    nlayer=size(structure)[1]
+
+    dis=parse.(Float64,structure[:,2]); xdisTot=sum(dis)
+
+    Npts=Int(floor(2*fB*(xdisTot/0.55)))
+    layer=Array{mat}(undef,nlayer)
+
+    for i in 1:nlayer
+        layer[i]=mat(structure[i,1],dis[i]);
+    end
+    return Npts,layer,nlayer
+end
+
 # =================================================================================================================
 # The data come from:
 # * Igor Vurgaftman, Matthew P. Lumb, and Jerry R. Meyer, Bands and Photons in III-V Semiconductor Quantum Structures,Oxford, 2020
