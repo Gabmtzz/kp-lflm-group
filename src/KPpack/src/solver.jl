@@ -75,14 +75,14 @@ function DOS(Ein,Eend,Estep,E,g)
     return Edos, ArrDos
 end 
 
-function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,n,c,cp,sV,sC,Emomentum,pb)
-    En=zeros(Nt,n); Env=zeros(Nt,n); Kp=zeros(Nt);
+function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,nc,nv,c,cp,sV,sC,Emomentum,pb)
+    En=zeros(Nt,nc); Env=zeros(Nt,nv); Kp=zeros(Nt);
     for Nk in 1:Nt
         k=[pl,pm]*kmax*(Nk-1)/(Nt+1);
         kx=k[1]; ky=k[2]
         Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum,pb);
-        λ, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sC);
-        λ1, ϕ = eigs(Hamqw, nev=n, which=:LM, sigma=sV);
+        λ, ϕ = eigs(Hamqw, nev=nc, which=:LM, sigma=sC);
+        λ1, ϕ = eigs(Hamqw, nev=nv, which=:LM, sigma=sV);
         E=sort(real(λ));
         Ev=sort(real(λ1));
         En[Nk,:]=E;
