@@ -140,9 +140,14 @@ function StrtoSymBase(expr)
         ex= Expr(:(=),expr,arrv); eval(ex)
     elseif typeof(expr)==Expr
         elems=expr.args
-        for i in 1:length(elems)
+        inic=1
+        if length(elems) ==2 
+            inic=2
+        end
+
+        for i in inic:length(elems)
             el=elems[i]
-            if el != :+ && el != :/&&el != :*&&el != :^ && el != :-
+            if el != :+ && el != :/&&el != :*&&el != :^ && el != :- && el != :sqrt 
 
                 if typeof(el)==Symbol
                     ss=elems[i]; arrv=@variables $ss; arrv=arrv[1]
@@ -158,37 +163,33 @@ end
 function StrtoSymbConv(s)
     sM=Meta.parse(s)
 
-    StrtoSymBase(sM)
+
+ #   for i in 1:length(sMArg)
+ #       if sMArg[i] != :sqrt
+            StrtoSymBase(sM)
+  #      end
+   # end
     strconv=eval(sM)
     
     return strconv
 end
 
-function findch(ch,str)
-    index=0;
-    for i in 1:length(str)
-        ch=str[i]
-        if ch=='i'
-            index=i
-        end
-    end
-    return index
-end
-
 function StrtoSymbComplexConv(sc)
     strRe=""; strIm=""
 
-    iel=findch('i',sc)
+    pos=findall.( "im", sc)
 
-    if iel != 0
-        strRe=sc[1:iel-2]; strIm=sc[iel+2:end];
-        exprRe=StrtoSymbConv(strRe); exprIm=StrtoSymbConv(strIm);
+    if length(pos)!=0
+        el=collect(pos[1])
+    
+        strRe=sc[1:el[1]-2]; strIm=sc[el[2]+1:end]
+        exprRe=KPpack.StrtoSymbConv(strRe); exprIm=KPpack.StrtoSymbConv(strIm);
         expr=exprRe+im*exprIm
     else
         strRe=sc;
-        expr=StrtoSymbConv(strRe);
+        expr=KPpack.StrtoSymbConv(strRe);
     end
-    return expr
+        return expr
 end
 
 function createSymbMatrix(model)
