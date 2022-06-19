@@ -1,6 +1,6 @@
+authors = ["Gabmtzz <gabmtzz27@gmail.com>"]
 name = "KPpack"
 uuid = "26ea0ef3-e7b0-494e-b39b-84c42b7463c6"
-authors = ["Gabmtzz <gabmtzz27@gmail.com>"]
 version = "0.1.0"
 
 [deps]
@@ -17,3 +17,6 @@ PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
+
+[extras]
+CPUSummary = "2a0fbf3d-bb9c-48f3-b0a9-814d99fd7ab9"
