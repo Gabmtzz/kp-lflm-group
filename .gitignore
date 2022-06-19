@@ -5,3 +5,4 @@
 Symbolic.ipynb
 Hamiltonian.jl
 FinitediffQW.jl
+LocalPreferences.toml

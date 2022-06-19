@@ -147,7 +147,7 @@ function StrtoSymBase(expr)
 
         for i in inic:length(elems)
             el=elems[i]
-            if el != :+ && el != :/&&el != :*&&el != :^ && el != :- && el != :sqrt 
+            if el != :+ && el != :/&&el != :*&&el != :^ && el != :- && el != :sqrt && el !== //
 
                 if typeof(el)==Symbol
                     ss=elems[i]; arrv=@variables $ss; arrv=arrv[1]
@@ -269,4 +269,19 @@ function setExcludePar(exclude)
         excludeS[i]=substitute(excludeS[i],Dict(excludeS[i]=>subs))
     end
     return excludeS
+end
+
+function getStringHamiltonian(matrix)
+    nel=size(matrix)[1]
+
+    strHt=Array{String}(undef,nel,nel);
+
+    for i in 1:nel
+        for j in 1:nel
+            elm=matrix[i,j]
+
+            strHt[i,j]=string(elm)
+        end
+    end
+    return strHt
 end
