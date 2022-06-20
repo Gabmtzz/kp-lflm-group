@@ -285,3 +285,25 @@ function getStringHamiltonian(matrix)
     end
     return strHt
 end
+
+function saveHamiltonian(Ham, name,dirHam)
+    
+    nameReal="Real"*name*".dat"; nameImag="Imag"*name*".dat"
+    dirReal=dirHam*nameReal; dirImag=dirHam*nameImag
+    matrixre=real(Ham); matrixim=imag(Ham) 
+    HstrRe=getStringHamiltonian(matrixre); HstrIm=getStringHamiltonian(matrixim);
+    writedlm(dirReal,HstrRe); writedlm(dirImag,HstrIm)
+    
+end
+
+function readHamiltonian(dirHam,name)
+    
+    nameReal="Real"*name*".dat"; nameImag="Imag"*name*".dat"
+    dirReal=dirHam*nameReal; dirImag=dirHam*nameImag
+    
+    HtotstrRe=readdlm(dirReal,'\t' ,String); HtotstrIm=readdlm(dirImag,'\t' ,String) 
+    HtotRe=createSymbMatrix(HtotstrRe); HtotIm=createSymbMatrix(HtotstrIm)
+    Htot=HtotRe+im*HtotIm;
+    
+    return Htot
+end
