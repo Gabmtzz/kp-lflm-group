@@ -307,3 +307,76 @@ function readHamiltonian(dirHam,name)
     
     return Htot
 end
+
+function isVar(varf,varArr)
+    dim=length(varArr)
+    i=1
+
+    flag=true; flagv=false
+    while flag 
+        if typeof((varf-varArr[i])==0)==Bool
+            flag=false; flagv=true
+        end
+        
+        if i==dim
+            flag=false
+        else
+            i =i+1
+            
+        end
+    
+    end  
+
+    return flagv
+end
+
+function correctH1(matrix, p,Emomentum)
+    zero=Symbol("0");zero= @variables $zero; zero=zero[1]
+    ss=Symbol("s");ss= @variables $ss; ss=ss[1]
+
+    H1r=Symbol("0r"); H1r= @variables $H1r[1:size(matrix)[1],1:size(matrix)[2]]; H1r=H1r[1] 
+    H1r=Symbolics.scalarize(H1r)
+
+    H1l=Symbol("0l"); H1l= @variables $H1l[1:size(matrix)[1],1:size(matrix)[2]]; H1l=H1l[1] 
+    H1l=Symbolics.scalarize(H1l)
+    M="c*(g_1-2*g_2)"; M=StrtoSymbConv(M)
+
+    for i in 1:size(matrix)[1]
+        for j in i:size(matrix)[1]
+            var=Symbolics.get_variables(matrix[i,j])
+
+            if !isempty(var)
+                if isVar(p,var)
+                    aux1l=matrix[i,j]*ss; aux2l=matrix[j,i]*(1-ss)
+                    H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1l)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2l))
+        
+                    aux2r=matrix[j,i]*ss; aux1r=matrix[i,j]*(1-ss)
+                    H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux1r)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux2r))    
+                elseif isVar(Emomentum[1],var)
+                    #aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
+                    aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
+                    H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
+                elseif isVar(Emomentum[2],var)
+                    #aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
+                    aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
+                    H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
+                end
+            else
+                H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>0)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>0))
+                H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>0)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>0))    
+            end
+        end
+    end
+
+    return H1l,H1r
+end
+function createH1Corr(H1,p, Emomentum)
+    mtRe=real(H1); mtIm=imag(H1); 
+    H1lRe,H1rRe=correctH1(mtRe,p,Emomentum); H1lIm,H1rIm=correctH1(mtIm,p,Emomentum);
+    H1l=H1lRe+im*H1lIm; H1r=H1rRe+im*H1rIm;
+    
+    return H1l, H1r
+
+end

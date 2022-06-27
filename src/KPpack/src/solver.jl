@@ -75,12 +75,12 @@ function DOS(Ein,Eend,Estep,E,g)
     return Edos, ArrDos
 end 
 
-function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,nc,nv,c,cp,sV,sC,Emomentum,pb)
+function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1r,H1l,H2,nc,nv,c,cp,sV,sC,Emomentum,pb,cr,s)
     En=zeros(Nt,nc); Env=zeros(Nt,nv); Kp=zeros(Nt);
     for Nk in 1:Nt
         k=[pl,pm]*kmax*(Nk-1)/(Nt+1);
         kx=k[1]; ky=k[2]
-        Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum,pb);
+        Hamqw=FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum,pb,cr,s);
         λ, ϕ = eigs(Hamqw, nev=nc, which=:LM, sigma=sC);
         λ1, ϕ = eigs(Hamqw, nev=nv, which=:LM, sigma=sV);
         E=sort(real(λ));
@@ -93,9 +93,9 @@ function DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1,H2,nc,nv,c,cp,sV,sC,Emomentu
     return En,Env,Kp
 end
 
-function EigSolQW(mlayer,Npts,H0,H1,H2,c,cps,dx,Emomentum,pb)
+function EigSolQW(mlayer,Npts,H0,H1r,H1l,H2,c,cps,dx,Emomentum,pb,cr,s)
     kx,ky=0.0,0.0;
-    Hamqw=FDHamiltonian(H0,H1,H2,mlayer,kx,ky,dx,c,cps,Npts,Emomentum,pb);
+    Hamqw=FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,c,cps,Npts,Emomentum,pb,cr,s);
     Eqw0, EVqw0 = eigen(Matrix(Hamqw));
     return Eqw0, EVqw0
 end

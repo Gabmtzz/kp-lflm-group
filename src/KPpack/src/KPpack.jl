@@ -25,6 +25,7 @@ mutable struct Materials
     k     # kappa Luttinger parameter
     delta # spin-orbit valence band split
     VBO   #valence band offset
+    me
 end
 
 # =================================================================================
@@ -37,6 +38,7 @@ mutable struct BowPar
     cF
     cDelta
     cVBO
+    cme
 end
 # ====================================================================================
 # using for the formation of quantum wells
