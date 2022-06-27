@@ -9,8 +9,10 @@ function params(Materials)
     index=findall(x->x==Materials.material,arr);
     i=index[1][1];
     Materials.g1=arr[i,2]; Materials.g2=arr[i,3]; Materials.g3=arr[i,4]; 
-    Materials.Eg=arr[i,5]; Materials.Ep=arr[i,7]; Materials.F=arr[i,8]; Materials.delta=arr[i,6];
-    Materials.VBO=arr[i,9]; Materials.k=arr[i,10];
+    Materials.Eg=arr[i,5]; Materials.Ep=arr[i,7]; Materials.F=arr[i,8]; 
+    Materials.delta=arr[i,6];
+    Materials.VBO=arr[i,9]; Materials.k=arr[i,10]; Materials.me=arr[i,11]
+
     nothing 
 end
 
@@ -62,6 +64,30 @@ function EgTemp(T,material,Eg)
     return EgT
 end
 
+function getF(mm,opt)
+    if opt=="calc"
+        S=(1/mm.me)-(mm.Ep*(mm.Eg+(2/3)*mm.delta)/(mm.Eg*(mm.Eg+mm.delta)))
+
+        mm.F=(S-1)/2
+    elseif opt=="zero"
+        S=0
+        mm.F=(S-1)/2
+
+        mm.Ep=(1/mm.me)*((mm.Eg*(mm.Eg+mm.delta))/(mm.Eg+(2/3)*mm.delta))
+    elseif opt=="one"
+        S=1.0
+        mm.F=(S-1)/2
+
+        mm.Ep=((1/mm.me)-1)*((mm.Eg*(mm.Eg+mm.delta))/(mm.Eg+(2/3)*mm.delta))
+    else opt=="table"
+
+    end
+
+
+
+    return mm
+end
+
 # =======================================================================================
 # function detMat(mat)
 # mat (String) => Name of Alloy or binary compound
@@ -94,7 +120,7 @@ function BowingPar(bowpar)
     index1=findall(x->x==bowpar.alloy,arr);
     i=index1[1][1];
     bowpar.cEg1=arr[i,2]; bowpar.cEg2=arr[i,3]; bowpar.cEp=arr[i,5]; bowpar.cF=arr[i,6]; bowpar.cDelta=arr[i,4];
-    bowpar.cVBO=arr[i,7]
+    bowpar.cVBO=arr[i,7]; bowpar.cme=arr[i,8] 
     nothing
 end
 
@@ -111,13 +137,13 @@ end
 function ParrAll(material1,material2,allMat,comp,All1)
     allMat.g1=comp*material1.g1+(1.0-comp)*material2.g1; allMat.g2=comp*material1.g2+(1.0-comp)*material2.g2;
     allMat.g3=comp*material1.g3+(1.0-comp)*material2.g3;
-    
     allMat.Eg=comp*material1.Eg+(1.0-comp)*material2.Eg-comp*(1-comp)*(All1.cEg1+All1.cEg2*comp);
     allMat.Ep=comp*material1.Ep+(1.0-comp)*material2.Ep-comp*(1-comp)*All1.cEp;
     allMat.F=comp*material1.F+(1.0-comp)*material2.F-comp*(1-comp)*All1.cF;
     allMat.delta=comp*material1.delta+(1.0-comp)*material2.delta-comp*(1-comp)*All1.cDelta;
     allMat.VBO=comp*material1.VBO+(1.0-comp)*material2.VBO-comp*(1-comp)*All1.cVBO;
     allMat.k=comp*material1.k+(1.0-comp)*material2.k;
+    allMat.me=comp*material1.me+(1.0-comp)*material2.me-comp*(1-comp)*All1.cme
     nothing
 end
 
@@ -129,19 +155,20 @@ end
 # This function fills the struct materials used in K.P bulk calculation
 # =======================================================================================
 
-function ParMat(AllMat,T)
+function ParMat(AllMat,T,opt)
     mat1, mat2, comp, alloy = DetMat(AllMat.material)
     if mat2==""
         params(AllMat);
     else
-        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         params(material1); params(material2); 
-        all1=BowPar(alloy,0.0,0.0,0.0,0.0,0.0,0.0);
+        all1=BowPar(alloy,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         BowingPar(all1);
         ParrAll(material1,material2,AllMat,comp,all1)
     end
     EgT=EgTemp(T,AllMat.material,AllMat.Eg)
     AllMat.Eg=EgT
+    AllMat=getF(AllMat,opt)
 end
 
 # =======================================================================================
@@ -150,12 +177,12 @@ end
 # layer ()
 # =======================================================================================
 
-function supParams(layer,X,boundary,mlayer,T)
+function supParams(layer,X,boundary,mlayer,T,opt)
     nlay=1;
     boundaryPoints=zeros(length(boundary));
     for i in 1:length(X)
-        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
-        ParMat(mlayer[i],T)
+        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        ParMat(mlayer[i],T,opt)
         mlayer[i].Eg=mlayer[i].Eg#+mlayer[i].VBO   
         if X[i]>= boundary[nlay] boundaryPoints[nlay]=i; nlay+=1  end
     end    
