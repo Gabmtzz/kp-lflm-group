@@ -25,7 +25,8 @@ mutable struct Materials
     k     # kappa Luttinger parameter
     delta # spin-orbit valence band split
     VBO   #valence band offset
-    me
+    me    #effective mass       
+    al    #lattice parameter
 end
 
 # =================================================================================

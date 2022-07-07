@@ -103,14 +103,14 @@ function FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum
     for i in 1:len
         if i==1
             AmV[i]=createFDAmatrix(mlayer,i,H0Re,H0Im,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
-            BmV[i]=createFDBmatrix(mlayer,i+1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
+            BmV[i]=createFDBmatrix(mlayer,i,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
         elseif i==len
             AmV[i]=createFDAmatrix(mlayer,i,H0Re,H0Im,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
-            CmV[i-1]=createFDCmatrix(mlayer,i-1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
+            CmV[i-1]=createFDCmatrix(mlayer,i,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
         else
             AmV[i]=createFDAmatrix(mlayer,i,H0Re,H0Im,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
-            BmV[i]=createFDBmatrix(mlayer,i+1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
-            CmV[i-1]=createFDCmatrix(mlayer,i-1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
+            BmV[i]=createFDBmatrix(mlayer,i,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
+            CmV[i-1]=createFDCmatrix(mlayer,i,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s)
         end
     end
     hns=Matrix(BlockTridiagonal(CmV, AmV, BmV))

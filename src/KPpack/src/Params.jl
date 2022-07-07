@@ -12,12 +12,13 @@ function params(Materials)
     Materials.Eg=arr[i,5]; Materials.Ep=arr[i,7]; Materials.F=arr[i,8]; 
     Materials.delta=arr[i,6];
     Materials.VBO=arr[i,9]; Materials.k=arr[i,10]; Materials.me=arr[i,11]
+    Materials.al=arr[i,12] 
 
     nothing 
 end
 
 # ============================================================================
-# Function VashPar(material)
+# Function TempPar(material)
 # Materials (Materials struct) => structure materials variable
 # 
 # obtains the Varshni parameter of respective material indicated in Materials 
@@ -25,17 +26,17 @@ end
 #
 # return; two varables (float) with the values of the alpha and beta
 # ============================================================================
-function VashPar(material)
+function TempPar(material)
     arr1=readdlm("./src/TempPar.csv",',');
     index1=findall(x->x==material,arr1);
     i=index1[1][1];
-    alfa=arr1[i,2]; beta=arr1[i,3];
+    alfa=arr1[i,2]; beta=arr1[i,3]; alat=arr1[i,4]
     
-    return alfa, beta
+    return alfa, beta, alat
 end
 
 # ====================================================================================
-# function EgTemp(T,material,Eg)
+# function aEgTemp(T,material,Eg)
 # T (float)=> Temperature,  material (Materials struct) =>structure materials variable
 # Eg (float) => energy gap
 #
@@ -44,24 +45,25 @@ end
 # Return EgT => Energy band gap 
 # ====================================================================================
 
-function EgTemp(T,material,Eg)
+function aEgTemp(T,material,Eg,al)
     mat1,mat2,comp,alloy=DetMat(material)
     if mat1=="HgTe"
         EgT=-0.303
     else
         if mat2==""
-            alfa, beta = VashPar(mat1)
+            alfa, beta,alb = TempPar(mat1)
         else
-            alfa1, beta1 = VashPar(mat1)
-            alfa2, beta2 = VashPar(mat2)
+            alfa1, beta1, alb1 = TempPar(mat1)
+            alfa2, beta2, alb2 = TempPar(mat2)
         
             alfa=comp*alfa1+(1.0-comp)*alfa2
             beta=comp*beta1+(1.0-comp)*beta2
+            alb=comp*alb1+(1.0-comp)*alb2
         end
-    
+        alT=al+alb*(T-300)
         EgT=Eg-(alfa*T^2)/(T+beta);
     end
-    return EgT
+    return EgT,alT
 end
 
 function getF(mm,opt)
@@ -144,6 +146,7 @@ function ParrAll(material1,material2,allMat,comp,All1)
     allMat.VBO=comp*material1.VBO+(1.0-comp)*material2.VBO-comp*(1-comp)*All1.cVBO;
     allMat.k=comp*material1.k+(1.0-comp)*material2.k;
     allMat.me=comp*material1.me+(1.0-comp)*material2.me-comp*(1-comp)*All1.cme
+    allMat.al=comp*material1.al+(1.0-comp)*material2.al
     nothing
 end
 
@@ -160,14 +163,14 @@ function ParMat(AllMat,T,opt)
     if mat2==""
         params(AllMat);
     else
-        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         params(material1); params(material2); 
         all1=BowPar(alloy,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         BowingPar(all1);
         ParrAll(material1,material2,AllMat,comp,all1)
     end
-    EgT=EgTemp(T,AllMat.material,AllMat.Eg)
-    AllMat.Eg=EgT
+    EgT,alT=aEgTemp(T,AllMat.material,AllMat.Eg,AllMat.al)
+    AllMat.Eg=EgT; AllMat.al=alT
     AllMat=getF(AllMat,opt)
 end
 
@@ -181,7 +184,7 @@ function supParams(layer,X,boundary,mlayer,T,opt)
     nlay=1;
     boundaryPoints=zeros(length(boundary));
     for i in 1:length(X)
-        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mlayer[i],T,opt)
         mlayer[i].Eg=mlayer[i].Eg#+mlayer[i].VBO   
         if X[i]>= boundary[nlay] boundaryPoints[nlay]=i; nlay+=1  end
@@ -189,18 +192,32 @@ function supParams(layer,X,boundary,mlayer,T,opt)
     return boundaryPoints[1:length(boundary)-1]
 end
 
-function setStructure(structure,fB)
+function setStructure(structure,fB,Temp)
     nlayer=size(structure)[1]
-
+    alLay=Array{Float64}(undef,nlayer)
     dis=parse.(Float64,structure[:,2]); xdisTot=sum(dis)
 
-    Npts=Int(floor(2*fB*(xdisTot/0.55)))
-    layer=Array{mat}(undef,nlayer)
+    layer=Array{mat}(undef,nlayer,)
 
     for i in 1:nlayer
-        layer[i]=mat(structure[i,1],dis[i]);
+        layer[i]=KPpack.mat(structure[i,1],dis[i]);
+        mml=Materials(structure[i,1],0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        ParMat(mml,Temp,"table");
+        alLay[i]=(dis[i]/xdisTot)*mml.al
     end
+    aprom=sum(alLay)
+    Npts=Int(floor(2*fB*(xdisTot/aprom)))
+
     return Npts,layer,nlayer
+end
+
+
+function writefile(data,name)
+    path="../../data/$(name).csv"
+    fout=open(path,"w")
+    #datstr=(a->(@sprintf "%10.3f" a)).(data);
+    writedlm(fout, data, ",", header=false)
+    close(fout)
 end
 
 # =================================================================================================================
@@ -213,10 +230,3 @@ end
 # * I. Vurgaftman and J. R. Meyer , Band parameters for III–V compound semiconductors and their alloys", Journal of Applied Physics 89, 5815-5875 # (2001)
 # =================================================================================================================
 
-function writefile(data,name)
-    path="../../data/$(name).csv"
-    fout=open(path,"w")
-    #datstr=(a->(@sprintf "%10.3f" a)).(data);
-    writedlm(fout, data, ",", header=false)
-    close(fout)
-end
