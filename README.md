@@ -1,6 +1,6 @@
 # kp-lflm-group
 
-This repository contains a Julia package used to calculate the band structure of bulk and quantum wells structures based on  III-V and II-VI semiconductors using K.P Theory.
+This repository contains a Julia package used to calculate the band structure of bulk and quantum wells structures based on  III-V  semiconductors using K.P Theory.
 
 This Package is developed by members of Nanophotonics IICO's research group. 
 
