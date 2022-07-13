@@ -353,13 +353,13 @@ function correctH1(matrix, p,Emomentum)
                     aux2r=matrix[j,i]*ss; aux1r=matrix[i,j]*(1-ss)
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux1r)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux2r))    
                 elseif isVar(Emomentum[1],var)
-                    #aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
-                    aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
+                    #aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
                 elseif isVar(Emomentum[2],var)
-                    #aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
-                    aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
+                    #aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
                 end

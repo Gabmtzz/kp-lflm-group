@@ -27,8 +27,8 @@ end
 function evalFuncFD(mRe,mIm,mlayer,i,kx,ky,consth,const2,cr,s)
     mq=mlayer[i]
     mReal=zeros(8,8); mImag=zeros(8,8)
-    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(mq.Ep),s]); 
-    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(mq.Ep),s])
+    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s]); 
+    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s])
     mEval=mReal+im*mImag;
     
     return mEval
