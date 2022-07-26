@@ -200,7 +200,7 @@ function setStructure(structure,fB,Temp)
     layer=Array{mat}(undef,nlayer,)
 
     for i in 1:nlayer
-        layer[i]=KPpack.mat(structure[i,1],dis[i]);
+        layer[i]=mat(structure[i,1],dis[i]);
         mml=Materials(structure[i,1],0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mml,Temp,"table");
         alLay[i]=(dis[i]/xdisTot)*mml.al
@@ -208,7 +208,7 @@ function setStructure(structure,fB,Temp)
     aprom=sum(alLay)
     Npts=Int(floor(2*fB*(xdisTot/aprom)))
 
-    return Npts,layer,nlayer
+    return Npts+1,layer,nlayer
 end
 
 

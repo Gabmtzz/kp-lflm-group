@@ -100,14 +100,20 @@ function EigSolQW(mlayer,Npts,H0,H1r,H1l,H2,c,cps,dx,Emomentum,pb,cr,s)
     return Eqw0, EVqw0
 end
 
-function eigenValQW(elem)
-    inf,sup=0,0;
-    pos=0
-    for i in 1:length(elem)-1
-        if (elem[i]<=0.0 && elem[i+1]>0.0)
-            inf=elem[i]; sup=elem[i+1]
-            pos=i
+function eigenValQW(elem,siz)
+    if siz==8
+        inf,sup=0,0;
+        pos=0
+        for i in 1:length(elem)-1
+            if (elem[i]<=0.0 && elem[i+1]>0.0)
+                inf=elem[i]; sup=elem[i+1]
+                pos=i
+            end
         end
+    elseif siz==6
+        pos=argmax(elem)
+        inf=elem[pos]; sup=elem[pos]
     end
+
     return inf, sup, pos
 end
