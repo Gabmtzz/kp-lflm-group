@@ -62,8 +62,8 @@ function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,poslab, kmax)
     end
 end
 
-function PloteigvQW(Npts,Eqw0)
-    x1=collect(range(1,8*Npts, length=8*Npts));
+function PloteigvQW(Npts,Eqw0,siz)
+    x1=collect(range(1,siz*Npts, length=siz*Npts));
     Egqw=real(Eqw0);
     plt.xlabel("Eigenvalue number, α"); plt.ylabel("Energy [eV]")
     plt.plot(x1,Egqw, color="blue", "o")
