@@ -115,8 +115,8 @@ function FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum
     hns=Matrix(BlockTridiagonal(CmV, AmV, BmV))
     if pb
         lhm=size(hns)[1]
-        hns[1:siz,lhm-siz-1:lhm]=createFDCmatrix(mlayer,1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
-        hns[lhm-siz-1:lhm,1:siz]=createFDBmatrix(mlayer,len,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
+        hns[1:siz,lhm-siz+1:lhm]=createFDCmatrix(mlayer,1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
+        hns[lhm-siz+1:lhm,1:siz]=createFDBmatrix(mlayer,len,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
     end
     
     #hsp=sparse(hns)

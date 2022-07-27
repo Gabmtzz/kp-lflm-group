@@ -117,3 +117,21 @@ function eigenValQW(elem,siz)
 
     return inf, sup, pos
 end
+
+function eigenSurface(H0,H1r,H1l,H2,mlayer,dx,c,cp,Npts,Emomentum,pb,cr,s,sV,nv,kinic,kend,kstep)
+    kxArr=collect(range(kinic,step=kstep,stop=kend)); kyArr=collect(range(kinic,step=kstep,stop=kend))
+    EArr=zeros(length(kxArr),length(kyArr),nv )
+
+    for i in eachindex(kxArr)
+        for j in eachindex(kyArr)
+            kx,ky=kxArr[i],kyArr[j]
+
+            Hamqw=FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,c,cp,Npts,Emomentum,pb,cr,s);
+            λ, ϕ = eigs(Hamqw, nev=nv, which=:LM, sigma=sV);
+            E=sort(real(λ),rev=true)
+            EArr[j,i,:]=E
+        end
+    end
+    
+    return EArr
+end
