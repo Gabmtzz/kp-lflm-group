@@ -330,7 +330,7 @@ function isVar(varf,varArr)
     return flagv
 end
 
-function correctH1(matrix, p,Emomentum)
+function correctH1(matrix, p,Emomentum,kind)
     zero=Symbol("0");zero= @variables $zero; zero=zero[1]
     ss=Symbol("s");ss= @variables $ss; ss=ss[1]
 
@@ -353,13 +353,23 @@ function correctH1(matrix, p,Emomentum)
                     aux2r=matrix[j,i]*ss; aux1r=matrix[i,j]*(1-ss)
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux1r)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux2r))    
                 elseif isVar(Emomentum[1],var)
-                    aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
-                    #aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+
+                    if kind=="nonSymm"
+                        aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
+                    elseif kind=="Symm"
+                        aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    end
+
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
                 elseif isVar(Emomentum[2],var)
-                    aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
-                    #aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+
+                    if kind=="nonSymm"
+                        aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
+                    elseif kind=="Symm"
+                        aux1=0.5*matrix[i,j]; aux2=0.5*matrix[j,i]
+                    end
+
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
                 end
@@ -372,9 +382,9 @@ function correctH1(matrix, p,Emomentum)
 
     return H1l,H1r
 end
-function createH1Corr(H1,p, Emomentum)
+function createH1Corr(H1,p, Emomentum,kind)
     mtRe=real(H1); mtIm=imag(H1); 
-    H1lRe,H1rRe=correctH1(mtRe,p,Emomentum); H1lIm,H1rIm=correctH1(mtIm,p,Emomentum);
+    H1lRe,H1rRe=correctH1(mtRe,p,Emomentum,kind); H1lIm,H1rIm=correctH1(mtIm,p,Emomentum,kind);
     H1l=H1lRe+im*H1lIm; H1r=H1rRe+im*H1rIm;
     
     return H1l, H1r

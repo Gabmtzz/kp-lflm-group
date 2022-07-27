@@ -68,3 +68,12 @@ function PloteigvQW(Npts,Eqw0,siz)
     plt.xlabel("Eigenvalue number, α"); plt.ylabel("Energy [eV]")
     plt.plot(x1,Egqw, color="blue", "o")
 end
+
+function plotEigSurface(EArr,eig,kinic,kend)
+    plt.ylabel(L"k_x ~[nm^{-1}]"); plt.xlabel(L"k_y~[nm^{-1}]") 
+    plt.xticks(ticks=collect(range(0,step=2.5,stop=20)),labels=collect(range(kinic,step=2/8,stop=kend)))
+    plt.yticks(ticks=collect(range(0,step=2.5,stop=20)),labels=collect(range(kinic,step=2/8,stop=kend)))
+    plot=plt.imshow(EArr[:,:,eig],cmap="turbo",aspect="auto",interpolation="gaussian")
+    bar=plt.colorbar(plot)
+    bar.set_label(L"Energy~[eV]")
+end
