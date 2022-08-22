@@ -164,11 +164,8 @@ function StrtoSymbConv(s)
     sM=Meta.parse(s)
 
 
- #   for i in 1:length(sMArg)
- #       if sMArg[i] != :sqrt
-            StrtoSymBase(sM)
-  #      end
-   # end
+    StrtoSymBase(sM)
+ 
     strconv=eval(sM)
     
     return strconv

@@ -77,3 +77,26 @@ function plotEigSurface(EArr,eig,kinic,kend)
     bar=plt.colorbar(plot)
     bar.set_label(L"Energy~[eV]")
 end
+
+function plotProbDistr(iVec,pos,EVqw0,siz,vecband,boundary,X,legendArr)
+    plt.xlabel("X [nm]"); plt.ylabel(L"|\Psi|^2 ~~[U.A.]")
+    vv,Evec=zeros(length(X)),zeros(length(X))*im
+    valMaxArr1,valMaxArr2=zeros(length(iVec)),zeros(length(vecband))
+    for k in 1:length(vecband)
+        for i in 1:length(iVec)
+            Evec=EVqw0[vecband[k]:siz:end,pos+iVec[i]]
+
+            vv=abs.(Evec)
+            plt.plot(X,real(vv),label=legendArr[k])
+            valMaxArr1[i]=sort(vv,rev=true)[1]
+        end
+        valMaxArr2[k]=sort(valMaxArr1,rev=true)[1]
+        
+    end
+    plt.legend()
+
+    valmax=sort(valMaxArr2,rev=true)[1]
+    for j in 1:length(boundary)-1
+        l0i,l0f=[boundary[j],boundary[j]],[0.0,valmax]; plt.plot(l0i,l0f,color="black", linestyle="--")
+    end
+end
