@@ -94,9 +94,9 @@ function plotProbDistr(iVec,pos,EVqw0,siz,vecband,boundary,X,legendArr)
         
     end
     plt.legend()
-
+    dx=X[2]-X[1]
     valmax=sort(valMaxArr2,rev=true)[1]
     for j in 1:length(boundary)-1
-        l0i,l0f=[boundary[j],boundary[j]],[0.0,valmax]; plt.plot(l0i,l0f,color="black", linestyle="--")
+        l0i,l0f=[boundary[j]+dx,boundary[j]+dx],[0.0,valmax]; plt.plot(l0i,l0f,color="black", linestyle="--")
     end
 end
