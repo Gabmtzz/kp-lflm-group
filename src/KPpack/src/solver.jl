@@ -135,3 +135,33 @@ function eigenSurface(H0,H1r,H1l,H2,mlayer,dx,c,cp,Npts,Emomentum,pb,cr,s,sV,nv,
     
     return EArr
 end
+
+function BandsQWKP(mlayer,kmax,Nt,dx,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,Eqw0,siz,Emomentum,pb,cr,s)
+    sV,sC,pos=KPpack.eigenValQW(real(Eqw0),siz)
+    #sV=-0.6; sC=-0.1
+    pl=1; pm=1;
+    Ecq11,Evq11,Kqw11 =KPpack.DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,sV,sC,Emomentum,pb,cr,s);
+
+    pl=1; pm=0;
+    Ecq10,Evq10,Kqw10 =KPpack.DiagQWM(mlayer,kmax+0.1,Nt,dx,pl,pm,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,sV,sC,Emomentum,pb,cr,s);
+    
+    EholeBand11=vcat(transpose(-Kqw11), transpose(Evq11))
+    EholeBand11=transpose(EholeBand11)
+
+    EholeBand10=vcat(transpose(Kqw10), transpose(Evq10))
+    EholeBand10=transpose(EholeBand10)
+
+    Ehole=vcat(rotr90(EholeBand11',3),EholeBand10)
+
+    ECondBand11=vcat(transpose(-Kqw11), transpose(Ecq11))
+    ECondBand11=transpose(ECondBand11)
+
+    ECondBand10=vcat(transpose(Kqw10), transpose(Ecq10))
+    ECondBand10=transpose(ECondBand10)
+
+    ECond=vcat(rotr90(ECondBand11',3),ECondBand10)
+
+    KqwBand=ECond[:,1]; EcqwBand=ECond[:,2:end]; EvqwBand=Ehole[:,2:end];
+    
+    return KqwBand, EcqwBand, EvqwBand, sV,sC,pos
+end

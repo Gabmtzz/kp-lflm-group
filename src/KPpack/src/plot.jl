@@ -33,32 +33,20 @@ function plotProf(mlayer,X,option)
     end
 end
 
-function PlotQWBand(Ecq11,Evq11,Kqw11,Ecq10,Evq10,Kqw10,option,poslab, kmax)
+function PlotQWBand(EvqwBand,EcqwBand,KqwBand,option,poslab, kmax)
     plt.xlabel(L"$k_{||}~ [nm^{-1}]$"); plt.ylabel("Energy [Ev]")
     if option=="complete_Band"
         plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
-        plt.plot(-1*Kqw11,Ecq11,color="black" )
-        plt.plot(-1*Kqw11,Evq11,color="black" )
-        plt.plot(Kqw10,Evq10,color="black" )
-        plt.plot(Kqw10,Ecq10,color="black" )
+        plt.plot(KqwBand,EvqwBand,color="black" )
+        plt.plot(KqwBand,EcqwBand,color="black" )
     elseif option=="complete_C"
         plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
-        plt.plot(-1*Kqw11,Ecq11,color="black" )
-        plt.plot(Kqw10,Ecq10,color="black" )
+        plt.plot(KqwBand,EcqwBand,color="black" )
     elseif option=="complete_V"
         plt.text(-0.7*kmax,poslab, L"$\leftarrow~~[110]$"); plt.text(0.7*kmax,poslab, L"$[100]~~\rightarrow$")
-        plt.plot(-1*Kqw11,Evq11,color="black" )
-        plt.plot(Kqw10,Evq10,color="black" )
-    elseif option=="comp_V"
-        plt.plot(Kqw11,Evq11,color="black", label=L"$[110]$")
-        plt.plot(Kqw10,Evq10,color="red",linestyle="dotted", label=L"$[100]$")
-        #plt.legend()
-    elseif option=="comp_C"
-        plt.plot(Kqw11,Ecq11,color="black" , label=L"$[110]$")
-        plt.plot(Kqw10,Ecq10,color="red",linestyle="dotted", label=L"$[100]$" )
-        #plt.legend()
+        plt.plot(KqwBand,EvqwBand,color="black" )
     else 
-        print("bad option: use complete_Band, complete_C, complete_V, comp_V or comp_C")
+        print("bad option: use complete_Band, complete_C")
     end
 end
 
@@ -83,14 +71,13 @@ function plotProbDistr(iVec,pos,EVqw0,siz,vecband,boundary,X,legendArr)
     vv,Evec=zeros(length(X)),zeros(length(X))*im
     valMaxArr1,valMaxArr2=zeros(length(iVec)),zeros(length(vecband))
     for k in 1:length(vecband)
-        for i in 1:length(iVec)
-            Evec=EVqw0[vecband[k]:siz:end,pos+iVec[i]]
+        Evec=EVqw0[vecband[k]:siz:end,pos+iVec]
 
-            vv=abs.(Evec)
-            plt.plot(X,real(vv),label=legendArr[k])
-            valMaxArr1[i]=sort(vv,rev=true)[1]
-        end
-        valMaxArr2[k]=sort(valMaxArr1,rev=true)[1]
+        vv=abs.(Evec)
+        plt.plot(X,real(vv),label=legendArr[k])
+        #valMaxArr1[iVec]=sort(vv,rev=true)[1]
+    
+        valMaxArr2[k]=sort(vv,rev=true)[1]
         
     end
     plt.legend()
