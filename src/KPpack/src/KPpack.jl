@@ -27,6 +27,7 @@ mutable struct Materials
     VBO   #valence band offset
     me    #effective mass       
     al    #lattice parameter
+    B     #B parameter
 end
 
 # =================================================================================
