@@ -5,7 +5,7 @@
 # ================================================================
 
 function params(Materials)
-    arr=readdlm("./src/MaterialsBulk.csv",',');
+    arr=readdlm("MaterialsBulk.csv",',');
     index=findall(x->x==Materials.material,arr);
     i=index[1][1];
     Materials.g1=arr[i,2]; Materials.g2=arr[i,3]; Materials.g3=arr[i,4]; 
@@ -27,7 +27,7 @@ end
 # return; two varables (float) with the values of the alpha and beta
 # ============================================================================
 function TempPar(material)
-    arr1=readdlm("./src/TempPar.csv",',');
+    arr1=readdlm("TempPar.csv",',');
     index1=findall(x->x==material,arr1);
     i=index1[1][1];
     alfa=arr1[i,2]; beta=arr1[i,3]; alat=arr1[i,4]
@@ -118,7 +118,7 @@ end
 # =======================================================================================
 
 function BowingPar(bowpar)
-    arr=readdlm("./src/BowingPar.csv",',');
+    arr=readdlm("BowingPar.csv",',');
     index1=findall(x->x==bowpar.alloy,arr);
     i=index1[1][1];
     bowpar.cEg1=arr[i,2]; bowpar.cEg2=arr[i,3]; bowpar.cEp=arr[i,5]; bowpar.cF=arr[i,6]; bowpar.cDelta=arr[i,4];
