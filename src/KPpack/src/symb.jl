@@ -228,15 +228,11 @@ function functionParams(paramsFunc,momentum)
 end
 
 function generateFunctionMatrix(matrix,paramsFunc,Emomentum)
-    #path="./src/HamiltonianFunc/"
     
     paramsFunSymb=KPpack.functionParams(paramsFunc,Emomentum)
 
     FuncMatreal=build_function(real(matrix),paramsFunSymb); FuncMatim=build_function(imag(matrix),paramsFunSymb);
     
-    #nameReal=path*name*"Real.jl"; nameImag=path*name*"Imag.jl" 
-    
-    #write(nameReal, string(FuncMatreal[2])); write(nameImag, string(FuncMatim[2]));
     return FuncMatreal[2], FuncMatim[2]
 end
 
@@ -327,7 +323,7 @@ function isVar(varf,varArr)
     return flagv
 end
 
-function correctH1(matrix, p,Emomentum,kind)
+function correctH1(matrix, p,b,Emomentum,kind)
     zero=Symbol("0");zero= @variables $zero; zero=zero[1]
     ss=Symbol("s");ss= @variables $ss; ss=ss[1]
 
@@ -349,7 +345,7 @@ function correctH1(matrix, p,Emomentum,kind)
         
                     aux2r=matrix[j,i]*ss; aux1r=matrix[i,j]*(1-ss)
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux1r)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux2r))    
-                elseif isVar(Emomentum[1],var)
+                elseif (isVar(Emomentum[1],var) && ~isVar(b,var))
 
                     if kind=="nonSymm"
                         aux1=matrix[i,j]-M*Emomentum[1]; aux2=M*Emomentum[1]
@@ -359,7 +355,7 @@ function correctH1(matrix, p,Emomentum,kind)
 
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
-                elseif isVar(Emomentum[2],var)
+                elseif (isVar(Emomentum[2],var) && ~isVar(b,var))
 
                     if kind=="nonSymm"
                         aux1=matrix[i,j]-M*Emomentum[2]; aux2=M*Emomentum[2]
@@ -369,6 +365,21 @@ function correctH1(matrix, p,Emomentum,kind)
 
                     H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2))
                     H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux2)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux1))
+                elseif isVar(b,var)
+                    if isVar(Emomentum[2],var)
+                        aux1l=matrix[i,j]*(1-ss); aux2l=matrix[j,i]*ss
+                        aux2r=matrix[j,i]*(1-ss); aux1r=matrix[i,j]*ss
+                    elseif isVar(Emomentum[1],var)
+                        aux1l=matrix[i,j]*ss; aux2l=matrix[j,i]*(1-ss)
+                        aux2r=matrix[j,i]*ss; aux1r=matrix[i,j]*(1-ss)
+                    else
+                        aux1l=matrix[i,j]*1; aux2l=matrix[j,i]*1
+                        aux2r=matrix[j,i]*1; aux1r=matrix[i,j]*1
+                    end
+                    H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>aux1l)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>aux2l))
+                    H1r[i,j]=substitute(H1r[i,j], Dict(H1r[i,j]=>aux1r)); H1r[j,i]=substitute(H1r[j,i], Dict(H1r[j,i]=>aux2r))    
+
+
                 end
             else
                 H1l[i,j]=substitute(H1l[i,j], Dict(H1l[i,j]=>0)); H1l[j,i]=substitute(H1l[j,i], Dict(H1l[j,i]=>0))
@@ -379,9 +390,9 @@ function correctH1(matrix, p,Emomentum,kind)
 
     return H1l,H1r
 end
-function createH1Corr(H1,p, Emomentum,kind)
+function createH1Corr(H1,p,b, Emomentum,kind)
     mtRe=real(H1); mtIm=imag(H1); 
-    H1lRe,H1rRe=correctH1(mtRe,p,Emomentum,kind); H1lIm,H1rIm=correctH1(mtIm,p,Emomentum,kind);
+    H1lRe,H1rRe=correctH1(mtRe,p,b,Emomentum,kind); H1lIm,H1rIm=correctH1(mtIm,p,b,Emomentum,kind);
     H1l=H1lRe+im*H1lIm; H1r=H1rRe+im*H1rIm;
     
     return H1l, H1r

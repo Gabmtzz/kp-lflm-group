@@ -26,7 +26,7 @@ end
 # ================================================================================
 function DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP)
 
-    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P"]
+    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P","B"]
     
     paramsFunSymb=functionParams(paramsFunc,Emomentum)
     
@@ -39,8 +39,8 @@ function DiagM(mm,kmax,Nt,pl,pm,pn,model,Emomentum,n,constC,constCP)
        kx=k[1]; ky=k[2];  kz=k[3]; #components of vector k
 
        HbRe=zeros(n,n); HbIm=zeros(n,n) 
-       HBulkRe(HbRe,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep)])
-       HBulkIm(HbIm,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep)])
+       HBulkRe(HbRe,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep),mm.B])
+       HBulkIm(HbIm,[kx,ky,kz,mm.g1,mm.g2,mm.g3,mm.Eg,mm.Ep,mm.F,mm.k,mm.delta,mm.VBO,constC,constCP,sqrt(mm.Ep),mm.B])
 
        h=HbRe+im*HbIm
 
@@ -138,7 +138,6 @@ end
 
 function BandsQWKP(mlayer,kmax,Nt,dx,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,Eqw0,siz,Emomentum,pb,cr,s)
     sV,sC,pos=KPpack.eigenValQW(real(Eqw0),siz)
-    #sV=-0.6; sC=-0.1
     pl=1; pm=1;
     Ecq11,Evq11,Kqw11 =KPpack.DiagQWM(mlayer,kmax,Nt,dx,pl,pm,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,sV,sC,Emomentum,pb,cr,s);
 
@@ -164,4 +163,11 @@ function BandsQWKP(mlayer,kmax,Nt,dx,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,Eqw0,siz,Emo
     KqwBand=ECond[:,1]; EcqwBand=ECond[:,2:end]; EvqwBand=Ehole[:,2:end];
     
     return KqwBand, EcqwBand, EvqwBand, sV,sC,pos
+end
+
+function resolveQWbands(mlayer,kmax,Nt,dx,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,siz,Emomentum,pb,cr,s)
+    Eqw0, EVqw0=EigSolQW(mlayer,Npts,H0,H1l,H1r,H2,c,cps,dx,Emomentum,pb,cr,s);
+    KqwBand, EcqwBand, EvqwBand, sV,sC,pos=BandsQWKP(mlayer,kmax,Nt,dx,Npts,H0,H1l,H1r,H2,nc,nv,c,cps,Eqw0,siz,Emomentum,pb,cr,s);
+    
+    return KqwBand, EcqwBand, EvqwBand, sV,sC,pos, Eqw0, EVqw0 
 end

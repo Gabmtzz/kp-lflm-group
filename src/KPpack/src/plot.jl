@@ -1,6 +1,6 @@
 function PlotBands(Etot,Ktot)
     plt.figure()
-    plt.xticks(ticks=[-1.0,-0.5,0,0.5,1.0], labels=[L"$\leftarrow$ L","Λ"," Γ", "Δ",L"X $\rightarrow$"])
+    plt.xticks(ticks=[-1.0,-0.5,0,0.5,0.8], labels=[L"$\leftarrow$ L","Λ"," Γ", "Δ",L"X $\rightarrow$"])
     plt.ylabel("Energy [eV]")
     plt.plot(Ktot,Etot, color="black")
 end

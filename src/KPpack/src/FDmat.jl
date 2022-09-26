@@ -17,7 +17,7 @@ function mesh(Npts,layer,n)
 end
 
 function createFuncFD(matriz,Emomentum)
-    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P","s"]; paramsFunSymb=functionParams(paramsFunc,Emomentum);
+    paramsFunc=["g_1","g_2", "g_3", "E_g","E_p", "F","k","Δ","VBO","c","cp","P","s","B"]; paramsFunSymb=functionParams(paramsFunc,Emomentum);
     funcMre=build_function(real(matriz),paramsFunSymb, expression=Val{false}); funcMim=build_function(imag(matriz),paramsFunSymb, expression=Val{false})
     mRe=funcMre[2]; mIm=funcMim[2];
     
@@ -27,8 +27,8 @@ end
 function evalFuncFD(mRe,mIm,mlayer,i,kx,ky,consth,const2,cr,s,siz)
     mq=mlayer[i]
     mReal=zeros(siz,siz); mImag=zeros(siz,siz)
-    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s]); 
-    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s])
+    mRe(mReal,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s,mq.B]); 
+    mIm(mImag,[kx,ky,0.0,mq.g1,mq.g2,mq.g3,mq.Eg,cr*mq.Ep,mq.F,mq.k,mq.delta,mq.VBO,consth,const2,sqrt(cr*mq.Ep),s,mq.B])
     mEval=mReal+im*mImag;
     
     return mEval
@@ -118,8 +118,6 @@ function FDHamiltonian(H0,H1r,H1l,H2,mlayer,kx,ky,dx,consth,const2,len,Emomentum
         hns[1:siz,lhm-siz+1:lhm]=createFDCmatrix(mlayer,1,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
         hns[lhm-siz+1:lhm,1:siz]=createFDBmatrix(mlayer,len,H1rRe,H1rIm,H1lRe,H1lIm,H2Re,H2Im,kx,ky,dx,consth,const2,cr,s,siz)
     end
-    
-    #hsp=sparse(hns)
-    
+        
     return sparse(hns)
 end

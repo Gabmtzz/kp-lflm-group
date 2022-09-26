@@ -12,7 +12,7 @@ function params(Materials)
     Materials.Eg=arr[i,5]; Materials.Ep=arr[i,7]; Materials.F=arr[i,8]; 
     Materials.delta=arr[i,6];
     Materials.VBO=arr[i,9]; Materials.k=arr[i,10]; Materials.me=arr[i,11]
-    Materials.al=arr[i,12] 
+    Materials.al=arr[i,12];  Materials.B=arr[i,13]
 
     nothing 
 end
@@ -147,6 +147,7 @@ function ParrAll(material1,material2,allMat,comp,All1)
     allMat.k=comp*material1.k+(1.0-comp)*material2.k;
     allMat.me=comp*material1.me+(1.0-comp)*material2.me-comp*(1-comp)*All1.cme
     allMat.al=comp*material1.al+(1.0-comp)*material2.al
+    allMat.B=comp*material1.B+(1.0-comp)*material2.B
     nothing
 end
 
@@ -163,7 +164,7 @@ function ParMat(AllMat,T,opt)
     if mat2==""
         params(AllMat);
     else
-        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+        material1=Materials(mat1,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0); material2=Materials(mat2,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         params(material1); params(material2); 
         all1=BowPar(alloy,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
         BowingPar(all1);
@@ -184,9 +185,9 @@ function supParams(layer,X,boundary,mlayer,T,opt)
     nlay=1;
     boundaryPoints=zeros(length(boundary));
     for i in 1:length(X)
-        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mlayer[i],T,opt)
-        mlayer[i].Eg=mlayer[i].Eg#+mlayer[i].VBO   
+        mlayer[i].Eg=mlayer[i].Eg
         if X[i]>= boundary[nlay] boundaryPoints[nlay]=i; nlay+=1  end
     end    
     return boundaryPoints[1:length(boundary)-1]
@@ -201,7 +202,7 @@ function setStructure(structure,fB,Temp)
 
     for i in 1:nlayer
         layer[i]=mat(structure[i,1],dis[i]);
-        mml=Materials(structure[i,1],0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
+        mml=Materials(structure[i,1],0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mml,Temp,"table");
         alLay[i]=(dis[i]/xdisTot)*mml.al
     end
@@ -215,7 +216,6 @@ end
 function writefile(data,name)
     path="../../data/$(name).csv"
     fout=open(path,"w")
-    #datstr=(a->(@sprintf "%10.3f" a)).(data);
     writedlm(fout, data, ",", header=false)
     close(fout)
 end
