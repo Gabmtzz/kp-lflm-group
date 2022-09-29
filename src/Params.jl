@@ -5,7 +5,15 @@
 # ================================================================
 
 function params(Materials)
-    arr=readdlm("../src/ParamFiles/MaterialsBulk.csv",',');
+        #Material,g1,g2,g3,Eg,delta,Ep,F,VBO,k,me,a,B
+    arr=["GaAs" 6.98 2.06 2.93 1.519 0.341 25.6 -1.0 -0.8 1.2 0.0675 0.565325 -0.304;
+        "AlAs" 3.76 0.82 1.42 3.009 0.28 21.1 -0.48 -1.33 0.12 0.15 0.566139 -0.213;
+        "InAs" 19.7 8.4 9.3 0.417 0.367 19.5 -1.0 -0.62 7.68 0.026 0.60583 0.137;
+        "GaSb" 13.4 4.7 6 0.812 0.76 25.8 -1.0 -0.03 3.18 0.039 0.60959 0.494;
+        "HgTe" 4.1 0.5 1.3 -0.303 1.08 18.8  0 -0.4 0.026 0.0 0.64603 0.22;
+        "CdTe" 1.47 -0.28 0.03 1.606 0.91 18.8 -0.09 -0.57 -1.31 0.027 0.6481 0.2241]
+
+
     index=findall(x->x==Materials.material,arr);
     i=index[1][1];
     Materials.g1=arr[i,2]; Materials.g2=arr[i,3]; Materials.g3=arr[i,4]; 
@@ -27,7 +35,14 @@ end
 # return; two varables (float) with the values of the alpha and beta
 # ============================================================================
 function TempPar(material)
-    arr1=readdlm("../src/ParamFiles/TempPar.csv",',');
+        #material,alpha,beta,ap
+    arr1=["GaAs" 5.41e-4 204 4.72e-6;
+        "AlAs" 8.85e-4 530 2.6e-6;
+        "InAs" 3.07e-4 191 3.48e-6;
+        "GaSb" 4.17e-4 140 4.72e-6;
+        "HgTe" 0.0 0.0 4.7e-6;
+        "CdTe" 5.9117e-4 160 4.7e-6]
+
     index1=findall(x->x==material,arr1);
     i=index1[1][1];
     alfa=arr1[i,2]; beta=arr1[i,3]; alat=arr1[i,4]
@@ -118,7 +133,12 @@ end
 # =======================================================================================
 
 function BowingPar(bowpar)
-    arr=readdlm("../src/ParamFiles/BowingPar.csv",',');
+        #alloy,eg1,eg2,delta,Ep,F,VBO,me
+    arr=["AlGaAs" -0.127 1.310 0 3.2 0 0 0;
+        "InGaAs" 0.447 0 0.15 -4.2 0 -0.61 0.005;
+        "InAlAs" 0.7 0 0.15 -10.2 0 -0.824 0.049;
+        "CdHgTe" 0.21 0 0 0 0 0 0]
+
     index1=findall(x->x==bowpar.alloy,arr);
     i=index1[1][1];
     bowpar.cEg1=arr[i,2]; bowpar.cEg2=arr[i,3]; bowpar.cEp=arr[i,5]; bowpar.cF=arr[i,6]; bowpar.cDelta=arr[i,4];
