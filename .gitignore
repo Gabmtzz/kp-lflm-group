@@ -7,3 +7,4 @@ Hamiltonian.jl
 FinitediffQW.jl
 LocalPreferences.toml
 .vscode
+/notebook/test_project.ipynb
