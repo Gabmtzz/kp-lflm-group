@@ -75,7 +75,6 @@ function plotProbDistr(iVec,pos,EVqw0,siz,vecband,boundary,X,legendArr)
 
         vv=abs.(Evec)
         plt.plot(X,real(vv),label=legendArr[k])
-        #valMaxArr1[iVec]=sort(vv,rev=true)[1]
     
         valMaxArr2[k]=sort(vv,rev=true)[1]
         
