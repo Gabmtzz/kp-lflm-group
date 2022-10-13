@@ -14,7 +14,7 @@ end
 
 function plotProf(mlayer,X,option)
     Ec=zeros(length(mlayer)); Ev=zeros(length(mlayer)) 
-    for i in 1:length(mlayer)
+    for i in eachindex(mlayer)
         Ec[i]=mlayer[i].Eg+mlayer[i].VBO
         Ev[i]=mlayer[i].VBO
     end
@@ -70,7 +70,7 @@ function plotProbDistr(iVec,pos,EVqw0,siz,vecband,boundary,X,legendArr)
     plt.xlabel("X [nm]"); plt.ylabel(L"|\Psi|^2 ~~[U.A.]")
     vv,Evec=zeros(length(X)),zeros(length(X))*im
     valMaxArr1,valMaxArr2=zeros(length(iVec)),zeros(length(vecband))
-    for k in 1:length(vecband)
+    for k in eachindex(vecband)
         Evec=EVqw0[vecband[k]:siz:end,pos+iVec]
 
         vv=abs.(Evec)

@@ -30,7 +30,7 @@ function getVar(H)
     se=Symbol("se"); se=@variables $se[1:length(parH)]; se=se[1]
     se=Symbolics.scalarize(se)
 
-    for i in 1:length(se)
+    for i in eachindex(se)
         se=substitute(se,Dict(se[i]=>parH[i]))
     end
 
@@ -91,7 +91,7 @@ end
 
 function Paramsboundary(params,b)
     parBound=params
-    for i in 1:length(parBound)
+    for i in eachindex(parBound)
         symtS=params[i]
         Ess=Symbolics.tosymbol(symtS)
         nSyn=Symbol(Ess,"_",b)
@@ -108,7 +108,7 @@ function modifiesBCmatrix(matriz,PrH,exclude,b)
 
     matriz1=matriz
 
-    for i in 1:length(paramsB1) 
+    for i in eachindex(paramsB1) 
         matriz1=substitute(matriz1,Dict(params[i]=>paramsB1[i]))
     end
     return matriz1
@@ -218,7 +218,7 @@ function functionParams(paramsFunc,momentum)
     parmsfunSym=Symbol("PsF"); parmsfunSym= @variables $parmsfunSym[1:length(paramsFunc)]; parmsfunSym=parmsfunSym[1] 
 
     parmsfunSym=Symbolics.scalarize(parmsfunSym)
-    for i in 1:length(paramsFunc)
+    for i in eachindex(paramsFunc)
         simbF=Symbol(paramsFunc[i]); simbF = @variables $simbF; simbF=simbF[1]
         parmsfunSym[i]=substitute(parmsfunSym[i],Dict(parmsfunSym[i]=> simbF))
     end
