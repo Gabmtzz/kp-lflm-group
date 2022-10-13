@@ -64,7 +64,7 @@ function DOS(Ein,Eend,Estep,E,g)
     Edos=collect(range(Ein, step=Estep, stop=Eend));
     de=Edos[2]-Edos[1];
     ArrDos=zeros(length(Edos));
-    for En=1:length(Edos)
+    for En=eachindex(Edos)
         for i=1:size(E)[1]
             for j=1:size(E)[2]
                 ArrDos[En]+=(g/(2*pi))/((Edos[En]-E[i,j])^2+(g/2)^2);

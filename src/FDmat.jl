@@ -2,7 +2,7 @@ function mesh(Npts,layer,n)
     len=0
     boundary=zeros(n);
     
-    for i in 1:length(layer)
+    for i in eachindex(layer)
         len += layer[i].size
         boundary[i]=len
     end
