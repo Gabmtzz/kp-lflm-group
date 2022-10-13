@@ -204,7 +204,7 @@ end
 function supParams(layer,X,boundary,mlayer,T,opt)
     nlay=1;
     boundaryPoints=zeros(length(boundary));
-    for i in 1:length(X)
+    for i in eachindex(X)
         mlayer[i]=Materials(layer[nlay].material,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
         ParMat(mlayer[i],T,opt)
         mlayer[i].Eg=mlayer[i].Eg
