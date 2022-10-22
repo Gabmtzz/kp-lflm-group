@@ -1,9 +1,10 @@
-# ================================================================
-# Function params (Materials)
-# Materials (Materials struct) => structure materials variable
-# Return the kp parameters of a material from csv file.
-# ================================================================
-
+#=
+===============================================================
+Function params (Materials)
+Materials (Materials struct) => structure materials variable
+Return the kp parameters of a material from csv file.
+================================================================
+ =# 
 function params(Materials)
         #Material,g1,g2,g3,Eg,delta,Ep,F,VBO,k,me,a,B
     arr=["GaAs" 6.98 2.06 2.93 1.519 0.341 25.6 -1.0 -0.8 1.2 0.0675 0.565325 -0.304;
@@ -25,16 +26,18 @@ function params(Materials)
     nothing 
 end
 
-# ============================================================================
-# Function TempPar(material)
-# Materials (Materials struct) => structure materials variable
-# 
-# obtains the Varshni parameter of respective material indicated in Materials 
-# variable.
-#
-# return; two varables (float) with the values of the alpha and beta
-# ============================================================================
-function TempPar(material)
+#=
+===========================================================================
+ Function TempPar(material)
+ Materials (Materials struct) => structure materials variable
+ 
+ obtains the Varshni parameter of respective material indicated in Materials 
+ variable.
+
+ return; two varables (float) with the values of the alpha and beta
+ ============================================================================
+=#
+ function TempPar(material)
         #material,alpha,beta,ap
     arr1=["GaAs" 5.41e-4 204 4.72e-6;
         "AlAs" 8.85e-4 530 2.6e-6;
@@ -50,20 +53,24 @@ function TempPar(material)
     return alfa, beta, alat
 end
 
-# ====================================================================================
-# function aEgTemp(T,material,Eg)
-# T (float)=> Temperature,  material (Materials struct) =>structure materials variable
-# Eg (float) => energy gap
-#
-# Calculates the band gap energy for the temperature (T) using the Varshni formula
-#
-# Return EgT => Energy band gap 
-# ====================================================================================
+#=
+ ====================================================================================
+ function aEgTemp(T,material,Eg)
+ T (float)=> Temperature,  material (Materials struct) =>structure materials variable
+ Eg (float) => energy gap
+
+ Calculates the band gap energy for the temperature (T) using the Varshni formula
+
+ Return EgT => Energy band gap 
+ ====================================================================================
+=#
 
 function aEgTemp(T,material,Eg,al)
     mat1,mat2,comp,alloy=DetMat(material)
     if mat1=="HgTe"
+        alfa, beta,alb = TempPar(mat1)
         EgT=-0.303
+        alT=al+alb*(T-300)
     else
         if mat2==""
             alfa, beta,alb = TempPar(mat1)
