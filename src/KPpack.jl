@@ -53,8 +53,6 @@ end
 include("symb.jl")
 #diagonalizes the Hamiltonian matrix and find the DOS
 include("solver.jl")
-#Creates the matrix of Kane with/without spin-orbit coupling
-#include("Hamiltonian.jl")
 #adquires the material parameters
 include("Params.jl")
 #Shows the band structure and the DOS
